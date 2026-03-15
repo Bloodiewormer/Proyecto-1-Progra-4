@@ -1,5 +1,6 @@
 package org.bolsa.empleo.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.bolsa.empleo.model.Usuario;
 import org.bolsa.empleo.service.UsuarioService;
@@ -7,11 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
+
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Controller
-@RequestMapping("/admin")
 public class AdminController {
     private final UsuarioService usuarioService;
 
@@ -19,28 +21,48 @@ public class AdminController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping("/dashboard")
-    public ResponseEntity<String> dashboard() {
-        return ResponseEntity.ok("Dashboard admin");
+    @GetMapping("/admin/dashboard")
+    public String dashboard(HttpSession session) {
+        validarRolAdmin(session);
+        return "admin/dashboard";
     }
 
-    @GetMapping("/oferentes-pendientes")
-    public String oferentesPendientes() {
+    @GetMapping("/admin/empresas-pendientes")
+    public String empresasPendientes(HttpSession session) {
+        validarRolAdmin(session);
+        return "admin/empresas-pendientes";
+    }
+
+    @GetMapping("/admin/oferentes-pendientes")
+    public String oferentesPendientes(HttpSession session) {
+        validarRolAdmin(session);
         return "admin/oferentes-pendientes";
     }
 
-    @PatchMapping("/usuarios/{idUsuario}/aprobar")
-    public ResponseEntity<Usuario> aprobarUsuario(@PathVariable Integer idUsuario) {
+    @PatchMapping("/api/admin/usuarios/{idUsuario}/aprobar")
+    @ResponseBody
+    public ResponseEntity<Usuario> aprobarUsuario(@PathVariable Integer idUsuario, HttpSession session) {
+        validarRolAdmin(session);
         return ResponseEntity.ok(usuarioService.aprobarUsuario(idUsuario));
     }
 
-    @GetMapping("/caracteristicas")
-    public ResponseEntity<String> gestionarCaracteristicas() {
-        return ResponseEntity.ok("Gestion de caracteristicas");
+    @GetMapping("/admin/caracteristicas")
+    public String gestionarCaracteristicas(HttpSession session) {
+        validarRolAdmin(session);
+        return "admin/caracteristicas";
     }
 
-    @GetMapping("/reportes")
-    public ResponseEntity<String> generarReporte() {
-        return ResponseEntity.ok("Reporte general");
+    @GetMapping("/admin/reporte")
+    public String generarReporte(HttpSession session) {
+        validarRolAdmin(session);
+        return "admin/reporte";
+    }
+
+
+    private void validarRolAdmin(HttpSession session) {
+        Object rol = session.getAttribute("rol");
+        if (rol == null || !"ADMIN".equalsIgnoreCase(rol.toString())) {
+            throw new ResponseStatusException(FORBIDDEN, "Acceso restringido a administradores");
+        }
     }
 }
