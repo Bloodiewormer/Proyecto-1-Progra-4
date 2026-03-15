@@ -15,12 +15,12 @@ public class OferenteCaracteristica {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_oferente", nullable = false)
-    private Oferente idOferente;
+    private Oferente oferente;
 
     @MapsId("idCaracteristica")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_caracteristica", nullable = false)
-    private Caracteristica idCaracteristica;
+    private Caracteristica caracteristica;
 
     @NotNull
     @Column(name = "nivel", nullable = false)
@@ -34,20 +34,20 @@ public class OferenteCaracteristica {
         this.id = id;
     }
 
-    public Oferente getIdOferente() {
-        return idOferente;
+    public Oferente getOferente() {
+        return oferente;
     }
 
-    public void setIdOferente(Oferente idOferente) {
-        this.idOferente = idOferente;
+    public void setOferente(Oferente oferente) {
+        this.oferente = oferente;
     }
 
-    public Caracteristica getIdCaracteristica() {
-        return idCaracteristica;
+    public Caracteristica getCaracteristica() {
+        return caracteristica;
     }
 
-    public void setIdCaracteristica(Caracteristica idCaracteristica) {
-        this.idCaracteristica = idCaracteristica;
+    public void setCaracteristica(Caracteristica caracteristica) {
+        this.caracteristica = caracteristica;
     }
 
     public Integer getNivel() {

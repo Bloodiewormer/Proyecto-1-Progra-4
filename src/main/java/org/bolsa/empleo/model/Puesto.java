@@ -19,7 +19,7 @@ public class Puesto {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_empresa", nullable = false)
-    private Empresa idEmpresa;
+    private Empresa empresa;
 
     @Size(max = 255)
     @NotNull
@@ -27,8 +27,7 @@ public class Puesto {
     private String titulo;
 
     @NotNull
-    @Lob
-    @Column(name = "descripcion", nullable = false)
+    @Column(name = "descripcion", nullable = false, columnDefinition = "text")
     private String descripcion;
 
     @NotNull
@@ -58,12 +57,12 @@ public class Puesto {
         this.id = id;
     }
 
-    public Empresa getIdEmpresa() {
-        return idEmpresa;
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
-    public void setIdEmpresa(Empresa idEmpresa) {
-        this.idEmpresa = idEmpresa;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     public String getTitulo() {

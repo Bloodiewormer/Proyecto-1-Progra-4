@@ -12,6 +12,11 @@ public class Empresa {
     @Column(name = "id_empresa", nullable = false)
     private Integer id;
 
+    @NotNull
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_usuario", nullable = false, unique = true)
+    private Usuario usuario;
+
     @Size(max = 255)
     @NotNull
     @Column(name = "nombre", nullable = false)
@@ -28,8 +33,7 @@ public class Empresa {
     private String telefono;
 
     @NotNull
-    @Lob
-    @Column(name = "descripcion", nullable = false)
+    @Column(name = "descripcion", nullable = false, columnDefinition = "text")
     private String descripcion;
 
     public Integer getId() {
@@ -38,6 +42,14 @@ public class Empresa {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public String getNombre() {

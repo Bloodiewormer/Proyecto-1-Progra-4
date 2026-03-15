@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 640px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        form {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        input, button {
+            padding: 0.6rem;
+            font-size: 1rem;
+        }
+
+        #resultado {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            background: #f8f8f8;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+<h1>Prueba de Login</h1>
+<p>Esta pagina envia credenciales al endpoint <code>/api/auth/login</code>.</p>
+
+<form id="login-form">
+    <label for="credencial">Credencial (correo o identificacion)</label>
+    <input id="credencial" name="credencial" type="text" required>
+
+    <label for="clave">Clave</label>
+    <input id="clave" name="clave" type="password" required>
+
+    <button type="submit">Probar Login</button>
+</form>
+
+<div id="resultado">Esperando prueba...</div>
+
+<script>
+    const form = document.getElementById('login-form');
+    const resultado = document.getElementById('resultado');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const payload = {
+            credencial: document.getElementById('credencial').value,
+            clave: document.getElementById('clave').value
+        };
+
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const bodyText = await response.text();
+            let body = bodyText;
+
+            try {
+                body = JSON.parse(bodyText);
+            } catch (error) {
+                // Si no es JSON, se muestra el texto crudo.
+            }
+
+            resultado.textContent = `HTTP ${response.status}\n${typeof body === 'string' ? body : JSON.stringify(body, null, 2)}`;
+        } catch (error) {
+            resultado.textContent = `Error de red: ${error.message}`;
+        }
+    });
+</script>
+</body>
+</html>
+
