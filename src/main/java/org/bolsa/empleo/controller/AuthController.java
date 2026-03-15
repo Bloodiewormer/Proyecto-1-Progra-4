@@ -36,12 +36,22 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/registro/empresa")
+    public String registroEmpresa() {
+        return "auth/registro-empresa";
+        }
+
     @PostMapping("/api/auth/logout")
     @ResponseBody
     public ResponseEntity<Void> logout(HttpSession session) {
         authService.logout();
         session.invalidate();
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/registro/oferente")
+    public String registroOferente() {
+        return "auth/registro-oferente";
     }
 }
 

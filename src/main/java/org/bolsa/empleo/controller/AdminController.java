@@ -1,5 +1,6 @@
 package org.bolsa.empleo.controller;
 
+import org.springframework.stereotype.Controller;
 import org.bolsa.empleo.model.Usuario;
 import org.bolsa.empleo.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
@@ -9,8 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/api/admin")
+@Controller
+@RequestMapping("/admin")
 public class AdminController {
     private final UsuarioService usuarioService;
 
@@ -21,6 +22,11 @@ public class AdminController {
     @GetMapping("/dashboard")
     public ResponseEntity<String> dashboard() {
         return ResponseEntity.ok("Dashboard admin");
+    }
+
+    @GetMapping("/oferentes-pendientes")
+    public String oferentesPendientes() {
+        return "admin/oferentes-pendientes";
     }
 
     @PatchMapping("/usuarios/{idUsuario}/aprobar")
@@ -38,4 +44,3 @@ public class AdminController {
         return ResponseEntity.ok("Reporte general");
     }
 }
-
