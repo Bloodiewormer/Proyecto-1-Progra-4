@@ -24,7 +24,7 @@ public class AuthController {
 
     @GetMapping("/login")
     public String mostrarLogin() {
-        return "presentation/Login/Login";
+        return "auth/login";
     }
 
     @PostMapping("/api/auth/login")
@@ -39,7 +39,7 @@ public class AuthController {
     @GetMapping("/registro/empresa")
     public String registroEmpresa() {
         return "auth/registro-empresa";
-        }
+    }
 
     @PostMapping("/api/auth/logout")
     @ResponseBody
