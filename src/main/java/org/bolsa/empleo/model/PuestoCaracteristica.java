@@ -15,12 +15,12 @@ public class PuestoCaracteristica {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_puesto", nullable = false)
-    private Puesto idPuesto;
+    private Puesto puesto;
 
     @MapsId("idCaracteristica")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_caracteristica", nullable = false)
-    private Caracteristica idCaracteristica;
+    private Caracteristica caracteristica;
 
     @NotNull
     @Column(name = "nivel_requerido", nullable = false)
@@ -34,20 +34,20 @@ public class PuestoCaracteristica {
         this.id = id;
     }
 
-    public Puesto getIdPuesto() {
-        return idPuesto;
+    public Puesto getPuesto() {
+        return puesto;
     }
 
-    public void setIdPuesto(Puesto idPuesto) {
-        this.idPuesto = idPuesto;
+    public void setPuesto(Puesto puesto) {
+        this.puesto = puesto;
     }
 
-    public Caracteristica getIdCaracteristica() {
-        return idCaracteristica;
+    public Caracteristica getCaracteristica() {
+        return caracteristica;
     }
 
-    public void setIdCaracteristica(Caracteristica idCaracteristica) {
-        this.idCaracteristica = idCaracteristica;
+    public void setCaracteristica(Caracteristica caracteristica) {
+        this.caracteristica = caracteristica;
     }
 
     public Integer getNivelRequerido() {

@@ -19,7 +19,7 @@ public class Caracteristica {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_padre")
-    private Caracteristica idPadre;
+    private Caracteristica padre;
 
     public Integer getId() {
         return id;
@@ -37,12 +37,12 @@ public class Caracteristica {
         this.nombre = nombre;
     }
 
-    public Caracteristica getIdPadre() {
-        return idPadre;
+    public Caracteristica getPadre() {
+        return padre;
     }
 
-    public void setIdPadre(Caracteristica idPadre) {
-        this.idPadre = idPadre;
+    public void setPadre(Caracteristica padre) {
+        this.padre = padre;
     }
 
 }

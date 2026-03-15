@@ -12,6 +12,11 @@ public class Oferente {
     @Column(name = "id_oferente", nullable = false)
     private Integer id;
 
+    @NotNull
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_usuario", nullable = false, unique = true)
+    private Usuario usuario;
+
     @Size(max = 255)
     @NotNull
     @Column(name = "num_identificacion", nullable = false)
@@ -52,6 +57,14 @@ public class Oferente {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public String getNumIdentificacion() {
