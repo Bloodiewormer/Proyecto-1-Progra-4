@@ -21,6 +21,9 @@
                 <a class="nav-link" th:href="@{/admin/oferentes-pendientes}">Oferentes</a>
                 <a class="nav-link" th:href="@{/admin/caracteristicas}">Características</a>
                 <a class="nav-link" th:href="@{/admin/reporte}">Reporte</a>
+                <form class="d-inline" th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-sm btn-outline-light ms-2">Cerrar sesión</button>
+                </form>
             </div>
         </div>
     </nav>

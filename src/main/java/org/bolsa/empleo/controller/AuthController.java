@@ -49,6 +49,13 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/logout")
+    public String logoutDesdeVista(HttpSession session) {
+        authService.logout();
+        session.invalidate();
+        return "redirect:/login";
+    }
+
     @GetMapping("/registro/oferente")
     public String registroOferente() {
         return "auth/registro-oferente";

@@ -9,6 +9,8 @@ import java.util.List;
 public interface PuestoService {
     List<Puesto> listarRecientes();
 
+    List<Puesto> listarPorEmpresa(Integer idEmpresa);
+
     List<Puesto> buscarPorFiltros(PuestoFiltroDto dto);
 
     Puesto crear(PuestoCreateDto dto, Integer idEmpresa);

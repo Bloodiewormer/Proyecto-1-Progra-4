@@ -11,7 +11,10 @@ import org.bolsa.empleo.service.OferenteService;
 import org.bolsa.empleo.service.PuestoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,15 +44,33 @@ public class EmpresaController {
     }
 
     @GetMapping("/empresa/mis-puestos")
-    public String misPuestos(HttpSession session) {
+    public String misPuestos(HttpSession session, Model model) {
         validarRolEmpresa(session);
+        model.addAttribute("puestos", puestoService.listarPorEmpresa(obtenerIdEmpresa(session)));
         return "empresa/mis-puestos";
     }
 
     @GetMapping("/empresa/nuevo-puesto")
-    public String crearPuesto(HttpSession session) {
+    public String crearPuesto(HttpSession session, Model model) {
         validarRolEmpresa(session);
+        if (!model.containsAttribute("puesto")) {
+            model.addAttribute("puesto", new PuestoCreateDto());
+        }
         return "empresa/nuevo-puesto";
+    }
+
+    @PostMapping("/empresa/nuevo-puesto")
+    public String guardarPuestoDesdeVista(
+            @Valid @ModelAttribute("puesto") PuestoCreateDto dto,
+            BindingResult bindingResult,
+            HttpSession session
+    ) {
+        validarRolEmpresa(session);
+        if (bindingResult.hasErrors()) {
+            return "empresa/nuevo-puesto";
+        }
+        puestoService.crear(dto, obtenerIdEmpresa(session));
+        return "redirect:/empresa/mis-puestos";
     }
 
     @GetMapping("/empresa/candidatos")

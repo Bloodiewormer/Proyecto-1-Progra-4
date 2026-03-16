@@ -34,6 +34,11 @@ public class PuestoServiceImpl implements PuestoService {
     }
 
     @Override
+    public List<Puesto> listarPorEmpresa(Integer idEmpresa) {
+        return puestoRepository.findByEmpresa_IdOrderByFechaPublicacionDesc(idEmpresa);
+    }
+
+    @Override
     public List<Puesto> buscarPorFiltros(PuestoFiltroDto dto) {
         return puestoRepository.buscarActivosPorFiltro(dto.getPalabraClave(), dto.getSalarioMin(), dto.getSalarioMax());
     }

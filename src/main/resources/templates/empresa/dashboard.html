@@ -20,6 +20,9 @@
                 <a class="nav-link" th:href="@{/empresa/mis-puestos}">Mis puestos</a>
                 <a class="nav-link" th:href="@{/empresa/nuevo-puesto}">Nuevo puesto</a>
                 <a class="nav-link" th:href="@{/empresa/candidatos}">Candidatos</a>
+                <form class="d-inline" th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-sm btn-outline-light ms-2">Cerrar sesión</button>
+                </form>
             </div>
         </div>
     </nav>
