@@ -11,6 +11,8 @@ import java.util.List;
 public interface PuestoRepository extends JpaRepository<Puesto, Integer> {
     List<Puesto> findByEstadoOrderByFechaPublicacionDesc(String estado, Pageable pageable);
 
+    List<Puesto> findByEmpresa_IdOrderByFechaPublicacionDesc(Integer idEmpresa);
+
     @Query("""
             select p from Puesto p
             where p.estado = 'ACTIVO'

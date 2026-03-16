@@ -19,6 +19,9 @@
                 <a class="nav-link" th:href="@{/oferente/dashboard}">Dashboard</a>
                 <a class="nav-link" th:href="@{/oferente/habilidades}">Habilidades</a>
                 <a class="nav-link" th:href="@{/oferente/subir-cv}">Subir CV</a>
+                <form class="d-inline" th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-sm btn-outline-light ms-2">Cerrar sesión</button>
+                </form>
             </div>
         </div>
     </nav>

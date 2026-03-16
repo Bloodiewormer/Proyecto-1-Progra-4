@@ -29,18 +29,20 @@
     <section class="container page-section">
         <div class="form-card max-w-900">
             <h1 class="form-title">Nuevo puesto</h1>
-            <form class="row g-3">
+            <form class="row g-3" th:action="@{/empresa/nuevo-puesto}" th:object="${puesto}" method="post">
                 <div class="col-md-6">
                     <label class="form-label">Nombre del puesto</label>
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" th:field="*{titulo}" required>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Salario</label>
-                    <input type="number" class="form-control">
+                    <input type="number" class="form-control" step="0.01" min="0.01" th:field="*{salario}" required>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('salario')}" th:errors="*{salario}"></div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Modalidad</label>
-                    <select class="form-select">
+                    <select class="form-select" disabled>
                         <option>Presencial</option>
                         <option>Remoto</option>
                         <option>Híbrido</option>
@@ -48,18 +50,19 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Estado</label>
-                    <select class="form-select">
+                    <select class="form-select" disabled>
                         <option>Activo</option>
                         <option>Inactivo</option>
                     </select>
                 </div>
                 <div class="col-12">
                     <label class="form-label">Descripción</label>
-                    <textarea class="form-control" rows="4"></textarea>
+                    <textarea class="form-control" rows="4" th:field="*{descripcion}" required></textarea>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
                 </div>
                 <div class="col-12">
                     <label class="form-label">Requisitos</label>
-                    <textarea class="form-control" rows="4"></textarea>
+                    <textarea class="form-control" rows="4" disabled></textarea>
                 </div>
                 <div class="col-12 form-actions">
                     <button type="submit" class="btn btn-primary">Guardar</button>
