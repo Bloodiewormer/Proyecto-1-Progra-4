@@ -3,6 +3,8 @@ package org.bolsa.empleo.service.impl;
 import org.bolsa.empleo.dto.LoginRequestDto;
 import org.bolsa.empleo.dto.LoginResponseDto;
 import org.bolsa.empleo.model.Usuario;
+import org.bolsa.empleo.repository.EmpresaRepository;
+import org.bolsa.empleo.repository.OferenteRepository;
 import org.bolsa.empleo.repository.UsuarioRepository;
 import org.bolsa.empleo.util.PasswordHashUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,12 +26,22 @@ class AuthServiceImplTest {
 
     @Mock
     private UsuarioRepository usuarioRepository;
+    @Mock
+    private EmpresaRepository empresaRepository;
+
+    @Mock
+    private OferenteRepository oferenteRepository;
 
     private AuthServiceImpl authService;
 
     @BeforeEach
     void setUp() {
-        authService = new AuthServiceImpl(usuarioRepository);
+        authService = new AuthServiceImpl(
+                usuarioRepository,
+                empresaRepository,
+                oferenteRepository
+        );
+
     }
 
     @Test
