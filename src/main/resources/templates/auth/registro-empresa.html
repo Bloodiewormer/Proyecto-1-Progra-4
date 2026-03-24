@@ -24,37 +24,42 @@
         <div class="register-wrapper">
             <div class="form-card">
                 <h1 class="form-title">Registro de Empresa</h1>
-                <form class="row g-3">
+
+                <div th:if="${success}" class="alert alert-success">¡Empresa registrada correctamente! Espera aprobación del administrador.</div>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+
+                <form class="row g-3" th:action="@{/registro/empresa}" th:object="${empresaDto}" method="post">
                     <div class="col-md-6">
                         <label class="form-label">Nombre de la empresa</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" th:field="*{nombre}" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Cédula jurídica</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" th:field="*{identificacion}" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Correo</label>
-                        <input type="email" class="form-control">
+                        <input type="email" class="form-control" th:field="*{correo}" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Teléfono</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" th:field="*{telefono}" required>
                     </div>
                     <div class="col-12">
-                        <label class="form-label">Dirección</label>
-                        <input type="text" class="form-control">
+                        <label class="form-label">Dirección / Localización</label>
+                        <input type="text" class="form-control" th:field="*{localizacion}" required>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Usuario</label>
-                        <input type="text" class="form-control">
+                    <div class="col-12">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control" rows="3" th:field="*{descripcion}" required></textarea>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Contraseña</label>
-                        <input type="password" class="form-control">
+                        <input type="password" class="form-control" th:field="*{password}" required>
                     </div>
                     <div class="col-12 form-actions">
-                        <button type="submit" class="btn btn-primary">Registrar</button>
+                        <button type="submit" class="btn btn-primary">Registrar Empresa</button>
                         <a th:href="@{/}" class="btn btn-outline-secondary">Cancelar</a>
                     </div>
                 </form>
