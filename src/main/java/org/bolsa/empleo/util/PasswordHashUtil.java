@@ -3,8 +3,20 @@ package org.bolsa.empleo.util;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 public final class PasswordHashUtil {
+
+    private static final int SALT_LENGTH = 16;
+
+    public static String generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[SALT_LENGTH];
+        random.nextBytes(salt);
+        return Base64.getEncoder().encodeToString(salt);
+    }
+
     private PasswordHashUtil() {
     }
 
