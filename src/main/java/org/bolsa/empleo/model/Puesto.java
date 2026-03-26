@@ -7,6 +7,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "puesto")
@@ -48,6 +50,9 @@ public class Puesto {
     @ColumnDefault("'ACTIVO'")
     @Column(name = "estado", nullable = false)
     private String estado;
+
+    @OneToMany(mappedBy = "puesto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PuestoCaracteristica> puestoCaracteristicas = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -111,6 +116,14 @@ public class Puesto {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public List<PuestoCaracteristica> getPuestoCaracteristicas() {
+        return puestoCaracteristicas;
+    }
+
+    public void setPuestoCaracteristicas(List<PuestoCaracteristica> puestoCaracteristicas) {
+        this.puestoCaracteristicas = puestoCaracteristicas;
     }
 
 }

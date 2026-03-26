@@ -30,6 +30,8 @@
         <div class="form-card max-w-900">
             <h1 class="form-title">Nuevo puesto</h1>
             <form class="row g-3" th:action="@{/empresa/nuevo-puesto}" th:object="${puesto}" method="post">
+
+                <!-- Nombre y Salario -->
                 <div class="col-md-6">
                     <label class="form-label">Nombre del puesto</label>
                     <input type="text" class="form-control" th:field="*{titulo}" required>
@@ -40,32 +42,55 @@
                     <input type="number" class="form-control" step="0.01" min="0.01" th:field="*{salario}" required>
                     <div class="text-danger small mt-1" th:if="${#fields.hasErrors('salario')}" th:errors="*{salario}"></div>
                 </div>
+
+                <!-- Tipo de publicación (nuevo) -->
                 <div class="col-md-6">
-                    <label class="form-label">Modalidad</label>
-                    <select class="form-select" disabled>
-                        <option>Presencial</option>
-                        <option>Remoto</option>
-                        <option>Híbrido</option>
+                    <label class="form-label">Tipo de publicación</label>
+                    <select class="form-select" th:field="*{tipoPublicacion}" required>
+                        <option value="PUBLICO">Público (visible para todos)</option>
+                        <option value="PRIVADO">Privado (solo oferentes registrados)</option>
                     </select>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label">Estado</label>
-                    <select class="form-select" disabled>
-                        <option>Activo</option>
-                        <option>Inactivo</option>
-                    </select>
-                </div>
+
+                <!-- Descripción -->
                 <div class="col-12">
-                    <label class="form-label">Descripción</label>
+                    <label class="form-label">Descripción general del puesto</label>
                     <textarea class="form-control" rows="4" th:field="*{descripcion}" required></textarea>
                     <div class="text-danger small mt-1" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
                 </div>
+
+                <!-- Características requeridas (dinámico con Thymeleaf) -->
                 <div class="col-12">
-                    <label class="form-label">Requisitos</label>
-                    <textarea class="form-control" rows="4" disabled></textarea>
+                    <label class="form-label">Características requeridas (máximo 5)</label>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Característica</th>
+                            <th>Nivel deseado (1-5)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="i : ${#numbers.sequence(0,4)}">
+                            <td>
+                                <select class="form-select" th:field="*{caracteristicasRequeridas[__${i}__].idCaracteristica}">
+                                    <option value="">-- Seleccione característica --</option>
+                                    <option th:each="car : ${caracteristicas}"
+                                            th:value="${car.id}"
+                                            th:text="${car.nombre}"></option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control" min="1" max="5"
+                                       th:field="*{caracteristicasRequeridas[__${i}__].nivel}">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('caracteristicasRequeridas')}" th:errors="*{caracteristicasRequeridas}"></div>
                 </div>
+
                 <div class="col-12 form-actions">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="submit" class="btn btn-primary">Guardar puesto</button>
                     <a th:href="@{/empresa/mis-puestos}" class="btn btn-outline-secondary">Cancelar</a>
                 </div>
             </form>

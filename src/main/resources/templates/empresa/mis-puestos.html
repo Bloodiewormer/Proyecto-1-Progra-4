@@ -41,25 +41,44 @@
                 <tr>
                     <th>Puesto</th>
                     <th>Salario</th>
+                    <th>Tipo</th>
                     <th>Estado</th>
-                    <th>Postulantes</th>
+                    <th>Características</th>
                     <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:if="${#lists.isEmpty(puestos)}">
-                    <td colspan="5" class="text-center text-muted">No hay puestos registrados.</td>
+                    <td colspan="6" class="text-center text-muted">No hay puestos registrados aún.</td>
                 </tr>
                 <tr th:each="puesto : ${puestos}">
-                    <td th:text="${puesto.titulo}">Titulo</td>
-                    <td th:text="${#numbers.formatDecimal(puesto.salario, 1, 'COMMA', 2, 'POINT')}">0,00</td>
+                    <td th:text="${puesto.titulo}"></td>
+                    <td th:text="${#numbers.formatDecimal(puesto.salario, 1, 'COMMA', 2, 'POINT')}"></td>
                     <td>
-                        <span class="badge" th:classappend="${puesto.estado == 'ACTIVO'} ? ' bg-success' : ' bg-secondary'" th:text="${puesto.estado}">ACTIVO</span>
+                        <span class="badge" th:classappend="${puesto.tipoPublicacion == 'PUBLICO'} ? 'bg-success' : 'bg-secondary'"
+                              th:text="${puesto.tipoPublicacion}"></span>
                     </td>
-                    <td>-</td>
                     <td>
-                        <a th:href="@{/empresa/candidatos}" class="btn btn-sm btn-outline-primary">Ver</a>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" disabled>Editar</button>
+                        <span class="badge" th:classappend="${puesto.estado == 'ACTIVO'} ? 'bg-success' : 'bg-secondary'"
+                              th:text="${puesto.estado}"></span>
+                    </td>
+                    <td>
+                        <span th:each="pc : ${puesto.puestoCaracteristicas}" class="badge bg-info me-1"
+                              th:text="${pc.caracteristica.nombre} + ' (nivel ' + ${pc.nivelRequerido} + ')'"></span>
+                        <span th:if="${#lists.isEmpty(puesto.puestoCaracteristicas)}" class="text-muted">Sin características</span>
+                    </td>
+                    <td>
+                        <a th:href="@{/empresa/candidatos}" class="btn btn-sm btn-outline-primary">Ver candidatos</a>
+
+                        <!-- NUEVO: Formulario SSR para desactivar (sin JavaScript) -->
+                        <form th:action="@{/empresa/puestos/{idPuesto}/desactivar(idPuesto=${puesto.id})}"
+                              method="post" style="display: inline;">
+                            <button type="submit"
+                                    class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('¿Desactivar este puesto?');">
+                                Desactivar
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>

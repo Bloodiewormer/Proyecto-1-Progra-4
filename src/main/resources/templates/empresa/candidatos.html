@@ -30,34 +30,73 @@
         <h1 class="page-title">Candidatos</h1>
         <p class="page-subtitle">Revise postulaciones por puesto</p>
 
-        <div class="table-card">
-            <table class="table table-bordered align-middle">
-                <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Puesto</th>
-                    <th>Experiencia</th>
-                    <th>Estado</th>
-                    <th>Detalle</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Ana López</td>
-                    <td>Frontend Developer</td>
-                    <td>3 años</td>
-                    <td>En revisión</td>
-                    <td><a th:href="@{/empresa/detalle-candidato}" class="btn btn-sm btn-outline-primary">Ver</a></td>
-                </tr>
-                <tr>
-                    <td>Carlos Pérez</td>
-                    <td>Backend Developer</td>
-                    <td>5 años</td>
-                    <td>Preseleccionado</td>
-                    <td><a th:href="@{/empresa/detalle-candidato}" class="btn btn-sm btn-outline-primary">Ver</a></td>
-                </tr>
-                </tbody>
-            </table>
+
+        <div th:if="${puestoSeleccionado == null}">
+            <p class="page-subtitle">Seleccione un puesto para ver candidatos</p>
+            <div class="table-card">
+                <table class="table table-bordered align-middle">
+                    <thead>
+                    <tr>
+                        <th>Puesto</th>
+                        <th>Salario</th>
+                        <th>Tipo</th>
+                        <th>Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(puestos)}">
+                        <td colspan="4" class="text-center text-muted">No hay puestos activos.</td>
+                    </tr>
+                    <tr th:each="puesto : ${puestos}">
+                        <td th:text="${puesto.titulo}"></td>
+                        <td th:text="${#numbers.formatDecimal(puesto.salario, 1, 'COMMA', 2, 'POINT')}"></td>
+                        <td>
+                            <span class="badge" th:classappend="${puesto.tipoPublicacion == 'PUBLICO'} ? 'bg-success' : 'bg-secondary'"
+                                  th:text="${puesto.tipoPublicacion}"></span>
+                        </td>
+                        <td>
+                            <a th:href="@{/empresa/candidatos(idPuesto=${puesto.id})}"
+                               class="btn btn-sm btn-primary">Ver candidatos</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div th:if="${puestoSeleccionado != null}">
+            <p class="page-subtitle">
+                Candidatos para: <strong th:text="${puestoSeleccionado.titulo}"></strong>
+            </p>
+            <div class="table-card">
+                <table class="table table-bordered align-middle">
+                    <thead>
+                    <tr>
+                        <th>Nombre del candidato</th>
+                        <th>% Coincidencia</th>
+                        <th>Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(candidatos)}">
+                        <td colspan="3" class="text-center text-muted">No hay candidatos que coincidan con este puesto.</td>
+                    </tr>
+                    <tr th:each="candidato : ${candidatos}">
+                        <td th:text="${candidato.nombre}"></td>
+                        <td>
+                            <span class="badge bg-success" th:text="${candidato.scoreCoincidencia} + ' características coinciden'"></span>
+                        </td>
+                        <td>
+                            <a th:href="@{/empresa/detalle-candidato}"
+                               class="btn btn-sm btn-outline-primary">Ver detalle</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <a th:href="@{/empresa/candidatos}" class="btn btn-outline-secondary mt-3">← Volver a la lista de puestos</a>
         </div>
     </section>
 </main>

@@ -1,5 +1,10 @@
 package org.bolsa.empleo.controller;
 
+import org.bolsa.empleo.dto.CaracteristicaNivelDto;   // NUEVO
+import org.bolsa.empleo.model.Caracteristica;          // NUEVO
+import org.bolsa.empleo.repository.CaracteristicaRepository; // NUEVO
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.bolsa.empleo.dto.OferenteMatchDto;
@@ -13,13 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -30,11 +29,13 @@ public class EmpresaController {
     private final PuestoService puestoService;
     private final OferenteService oferenteService;
     private final EmpresaRepository empresaRepository;
+    private final CaracteristicaRepository caracteristicaRepository; // NUEVO
 
-    public EmpresaController(PuestoService puestoService, OferenteService oferenteService, EmpresaRepository empresaRepository) {
+    public EmpresaController(PuestoService puestoService, OferenteService oferenteService, EmpresaRepository empresaRepository, CaracteristicaRepository caracteristicaRepository) {
         this.puestoService = puestoService;
         this.oferenteService = oferenteService;
         this.empresaRepository = empresaRepository;
+        this.caracteristicaRepository = caracteristicaRepository;
     }
 
     @GetMapping("/empresa/dashboard")
@@ -54,8 +55,19 @@ public class EmpresaController {
     public String crearPuesto(HttpSession session, Model model) {
         validarRolEmpresa(session);
         if (!model.containsAttribute("puesto")) {
-            model.addAttribute("puesto", new PuestoCreateDto());
+            PuestoCreateDto dto = new PuestoCreateDto();
+            List<CaracteristicaNivelDto> lista = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                lista.add(new CaracteristicaNivelDto());
+            }
+            dto.setCaracteristicasRequeridas(lista);
+
+            model.addAttribute("puesto", dto);//new
+
+
         }
+        model.addAttribute("caracteristicas", caracteristicaRepository.findAll());
+
         return "empresa/nuevo-puesto";
     }
 
@@ -74,8 +86,28 @@ public class EmpresaController {
     }
 
     @GetMapping("/empresa/candidatos")
-    public String candidatos(HttpSession session) {
+    public String candidatos(@RequestParam(required = false) Integer idPuesto,
+                             HttpSession session, Model model) {
         validarRolEmpresa(session);
+        Integer idEmpresa = obtenerIdEmpresa(session);
+
+        // Todos los puestos de la empresa (para poder elegir)
+        List<Puesto> puestos = puestoService.listarPorEmpresa(idEmpresa);
+        model.addAttribute("puestos", puestos);
+
+        if (idPuesto != null) {
+            // Buscamos el puesto seleccionado
+            Puesto puestoSeleccionado = puestos.stream()
+                    .filter(p -> p.getId().equals(idPuesto))
+                    .findFirst()
+                    .orElse(null);
+
+            if (puestoSeleccionado != null) {
+                List<OferenteMatchDto> candidatos = oferenteService.buscarCoincidencias(idPuesto);
+                model.addAttribute("candidatos", candidatos);
+                model.addAttribute("puestoSeleccionado", puestoSeleccionado);
+            }
+        }
         return "empresa/candidatos";
     }
 
@@ -123,5 +155,12 @@ public class EmpresaController {
         Empresa empresa = empresaRepository.findByUsuarioId(idUsuario)
                 .orElseThrow(() -> new ResponseStatusException(FORBIDDEN, "Empresa no vinculada al usuario"));
         return empresa.getId();
+    }
+
+    @PostMapping("/empresa/puestos/{idPuesto}/desactivar")
+    public String desactivarPuestoDesdeVista(@PathVariable Integer idPuesto, HttpSession session) {
+        validarRolEmpresa(session);
+        puestoService.desactivar(idPuesto);
+        return "redirect:/empresa/mis-puestos";
     }
 }

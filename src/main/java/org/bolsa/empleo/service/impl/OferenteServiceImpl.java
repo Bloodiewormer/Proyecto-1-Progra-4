@@ -46,7 +46,13 @@ public class OferenteServiceImpl implements OferenteService {
         Oferente oferente = oferenteRepository.findById(idOferente)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Oferente no encontrado"));
 
+        oferenteCaracteristicaRepository.deleteByOferente_Id(idOferente);
+
         for (CaracteristicaNivelDto habilidad : habilidades) {
+            if (habilidad.getIdCaracteristica() == null || habilidad.getNivel() == null) {
+                continue;
+            }
+
             OferenteCaracteristica relacion = new OferenteCaracteristica();
             OferenteCaracteristicaId id = new OferenteCaracteristicaId();
             id.setIdOferente(idOferente);
