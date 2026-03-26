@@ -10,6 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.bolsa.empleo.model.Usuario;
 import org.bolsa.empleo.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,7 +25,9 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Controller
+@PreAuthorize("hasRole('ADMIN')")   // protección declarativa a nivel de clase
 public class AdminController {
+
     private final UsuarioService usuarioService;
     private final CaracteristicaRepository caracteristicaRepository;
     private final PuestoService puestoService;
@@ -31,8 +39,7 @@ public class AdminController {
     }
 
     @GetMapping("/admin/dashboard")
-    public String dashboard(HttpSession session) {
-        validarRolAdmin(session);
+    public String dashboard() {
         return "admin/dashboard";
     }
 
@@ -89,14 +96,5 @@ public class AdminController {
         List<Puesto> puestos = puestoService.obtenerTodosLosPuestos();
         model.addAttribute("puestos", puestos);   // NUEVO: para mostrar tabla en pantalla
         return "admin/reporte";
-    }
-
-
-
-    private void validarRolAdmin(HttpSession session) {
-        Object rol = session.getAttribute("rol");
-        if (rol == null || !"ADMIN".equalsIgnoreCase(rol.toString())) {
-            throw new ResponseStatusException(FORBIDDEN, "Acceso restringido a administradores");
-        }
     }
 }
