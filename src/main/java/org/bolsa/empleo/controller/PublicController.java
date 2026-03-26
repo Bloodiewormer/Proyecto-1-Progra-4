@@ -1,6 +1,5 @@
 package org.bolsa.empleo.controller;
 
-import jakarta.servlet.http.HttpSession;
 import org.bolsa.empleo.dto.PuestoFiltroDto;
 import org.bolsa.empleo.model.Puesto;
 import org.bolsa.empleo.service.PuestoService;
@@ -9,6 +8,8 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,16 +54,18 @@ public class PublicController {
     }
 
     @GetMapping("/cv/{filename}")
-    public ResponseEntity<Resource> verCV(@PathVariable String filename, HttpSession session) {
+    public ResponseEntity<Resource> verCV(@PathVariable String filename, 
+                                         @AuthenticationPrincipal UserDetails principal) {
 
-        Object rolObj = session.getAttribute("rol");
-        if (rolObj == null) {
+        if (principal == null) {
             throw new ResponseStatusException(FORBIDDEN, "Debe iniciar sesión para ver CVs");
         }
-        String rol = rolObj.toString().toUpperCase();
 
-        if ("OFERENTE".equals(rol)) {
-        } else if (!"EMPRESA".equals(rol) && !"ADMIN".equals(rol)) {
+        // Verificar que el usuario tenga al menos uno de los roles permitidos
+        boolean tienePermiso = principal.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().matches("ROLE_(OFERENTE|EMPRESA|ADMIN)"));
+
+        if (!tienePermiso) {
             throw new ResponseStatusException(FORBIDDEN, "Acceso denegado al CV");
         }
 

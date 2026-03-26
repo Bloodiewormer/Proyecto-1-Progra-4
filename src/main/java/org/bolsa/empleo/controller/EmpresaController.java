@@ -5,7 +5,6 @@ import org.bolsa.empleo.model.Caracteristica;          // NUEVO
 import org.bolsa.empleo.repository.CaracteristicaRepository; // NUEVO
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.bolsa.empleo.dto.OferenteMatchDto;
 import org.bolsa.empleo.dto.PuestoCreateDto;
@@ -88,9 +87,8 @@ public class EmpresaController {
 
     @GetMapping("/empresa/candidatos")
     public String candidatos(@RequestParam(required = false) Integer idPuesto,
-                             HttpSession session, Model model) {
-        validarRolEmpresa(session);
-        Integer idEmpresa = obtenerIdEmpresa(session);
+                             @AuthenticationPrincipal UserDetails principal, Model model) {
+        Integer idEmpresa = resolverIdEmpresa(principal);
 
         // Todos los puestos de la empresa (para poder elegir)
         List<Puesto> puestos = puestoService.listarPorEmpresa(idEmpresa);
@@ -155,8 +153,7 @@ public class EmpresaController {
     }
 
     @PostMapping("/empresa/puestos/{idPuesto}/desactivar")
-    public String desactivarPuestoDesdeVista(@PathVariable Integer idPuesto, HttpSession session) {
-        validarRolEmpresa(session);
+    public String desactivarPuestoDesdeVista(@PathVariable Integer idPuesto) {
         puestoService.desactivar(idPuesto);
         return "redirect:/empresa/mis-puestos";
     }

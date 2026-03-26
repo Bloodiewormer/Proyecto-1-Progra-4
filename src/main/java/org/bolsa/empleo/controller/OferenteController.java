@@ -12,7 +12,6 @@ import org.bolsa.empleo.repository.CaracteristicaRepository;
 import org.bolsa.empleo.dto.CaracteristicaNivelDto;
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.bolsa.empleo.repository.OferenteRepository;
 import org.bolsa.empleo.service.OferenteService;
@@ -24,12 +23,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -55,8 +48,7 @@ public class OferenteController {
     }
 
     @GetMapping("/oferente/habilidades")
-    public String gestionarHabilidades(HttpSession session, Model model) {
-        validarRolOferente(session);
+    public String gestionarHabilidades(@AuthenticationPrincipal UserDetails principal, Model model) {
 
         if (!model.containsAttribute("habilidades")) {
             List<CaracteristicaNivelDto> lista = new ArrayList<>();
@@ -71,22 +63,19 @@ public class OferenteController {
     }
 
     @GetMapping("/oferente/subir-cv")
-    public String vistaSubirCv(HttpSession session, Model model) {
-        validarRolOferente(session);
-        Integer idOferente = obtenerIdOferente(session);
+    public String vistaSubirCv(@AuthenticationPrincipal UserDetails principal, Model model) {
+        Integer idOferente = resolverIdOferente(principal);
         Oferente oferente = oferenteRepository.findById(idOferente).orElse(null);
         model.addAttribute("cvPath", oferente != null ? oferente.getCvPath() : null);
         return "oferente/subir-cv";
     }
 
     @PostMapping("/oferente/subir-cv")
-    public String subirCV(HttpSession session,
+    public String subirCV(@AuthenticationPrincipal UserDetails principal,
                           @RequestParam("cv") MultipartFile archivo) {
-        validarRolOferente(session);
-        Integer idOferente = obtenerIdOferente(session);
+        Integer idOferente = resolverIdOferente(principal);
 
         if (archivo.isEmpty()) {
-            // puedes agregar mensaje de error si quieres
             return "redirect:/oferente/subir-cv";
         }
         try {
