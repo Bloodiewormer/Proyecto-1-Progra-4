@@ -42,13 +42,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Ana López</td>
-                    <td>ana@email.com</td>
-                    <td>123456789</td>
+                <tr th:if="${#lists.isEmpty(oferentes)}">
+                    <td colspan="4" class="text-center text-muted">No hay oferentes pendientes.</td>
+                </tr>
+                <tr th:each="oferente : ${oferentes}">
+                    <td th:text="${oferente.nombre} + ' ' + ${oferente.apellido}"></td>
+                    <td th:text="${oferente.correo}"></td>
+                    <td th:text="${oferente.identificacion}"></td>
                     <td>
-                        <button class="btn btn-sm btn-primary">Aprobar</button>
-                        <button class="btn btn-sm btn-outline-danger">Rechazar</button>
+                        <form th:action="@{/admin/usuarios/{id}/aprobar(id=${oferente.id})}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-primary">Aprobar</button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>

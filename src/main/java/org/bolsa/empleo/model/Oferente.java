@@ -3,6 +3,8 @@ package org.bolsa.empleo.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "oferente")
@@ -50,6 +52,9 @@ public class Oferente {
     @Size(max = 255)
     @Column(name = "cv_path")
     private String cvPath;
+
+    @OneToMany(mappedBy = "oferente", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OferenteCaracteristica> oferenteCaracteristicas = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -122,5 +127,14 @@ public class Oferente {
     public void setCvPath(String cvPath) {
         this.cvPath = cvPath;
     }
+
+    public List<OferenteCaracteristica> getOferenteCaracteristicas() {
+        return oferenteCaracteristicas;
+    }
+
+    public void setOferenteCaracteristicas(List<OferenteCaracteristica> oferenteCaracteristicas) {
+        this.oferenteCaracteristicas = oferenteCaracteristicas;
+    }
+
 
 }

@@ -16,5 +16,7 @@ public interface PuestoService {
     Puesto crear(PuestoCreateDto dto, Integer idEmpresa);
 
     void desactivar(Integer idPuesto);
+
+    List<Puesto> obtenerTodosLosPuestos();
 }
 

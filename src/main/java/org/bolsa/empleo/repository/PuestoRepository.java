@@ -23,5 +23,7 @@ public interface PuestoRepository extends JpaRepository<Puesto, Integer> {
             order by p.fechaPublicacion desc
             """)
     List<Puesto> buscarActivosPorFiltro(String palabraClave, BigDecimal salarioMin, BigDecimal salarioMax);
+
+    List<Puesto> findAllByOrderByFechaPublicacionDesc();
 }
 

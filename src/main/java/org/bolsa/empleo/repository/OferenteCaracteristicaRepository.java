@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface OferenteCaracteristicaRepository extends JpaRepository<OferenteCaracteristica, OferenteCaracteristicaId> {
     List<OferenteCaracteristica> findByOferente_Id(Integer oferenteId);
+
+    void deleteByOferente_Id(Integer oferenteId);
 }

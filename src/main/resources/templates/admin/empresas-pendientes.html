@@ -42,13 +42,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>SoftLab</td>
-                    <td>softlab@email.com</td>
-                    <td>2222-3333</td>
+                <tr th:if="${#lists.isEmpty(empresas)}">
+                    <td colspan="4" class="text-center text-muted">No hay empresas pendientes.</td>
+                </tr>
+                <tr th:each="empresa : ${empresas}">
+                    <td th:text="${empresa.nombre}"></td>
+                    <td th:text="${empresa.correo}"></td>
+                    <td th:text="${empresa.telefono}"></td>
                     <td>
-                        <button class="btn btn-sm btn-primary">Aprobar</button>
-                        <button class="btn btn-sm btn-outline-danger">Rechazar</button>
+                        <form th:action="@{/admin/usuarios/{id}/aprobar(id=${empresa.id})}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-primary">Aprobar</button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>

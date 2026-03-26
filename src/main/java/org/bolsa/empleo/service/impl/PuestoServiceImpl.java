@@ -1,12 +1,19 @@
 package org.bolsa.empleo.service.impl;
 
+
+import org.bolsa.empleo.dto.CaracteristicaNivelDto;
 import org.bolsa.empleo.dto.PuestoCreateDto;
 import org.bolsa.empleo.dto.PuestoFiltroDto;
+import org.bolsa.empleo.model.Caracteristica;
 import org.bolsa.empleo.model.Empresa;
 import org.bolsa.empleo.model.EstadoPuesto;
 import org.bolsa.empleo.model.Puesto;
+import org.bolsa.empleo.model.PuestoCaracteristica;
+import org.bolsa.empleo.model.PuestoCaracteristicaId;
 import org.bolsa.empleo.model.TipoPublicacion;
+import org.bolsa.empleo.repository.CaracteristicaRepository;
 import org.bolsa.empleo.repository.EmpresaRepository;
+import org.bolsa.empleo.repository.PuestoCaracteristicaRepository;
 import org.bolsa.empleo.repository.PuestoRepository;
 import org.bolsa.empleo.service.PuestoService;
 import org.springframework.data.domain.PageRequest;
@@ -22,10 +29,14 @@ import java.util.List;
 public class PuestoServiceImpl implements PuestoService {
     private final PuestoRepository puestoRepository;
     private final EmpresaRepository empresaRepository;
+    private final PuestoCaracteristicaRepository puestoCaracteristicaRepository; // NUEVO
+    private final CaracteristicaRepository caracteristicaRepository;           // NUEVO
 
-    public PuestoServiceImpl(PuestoRepository puestoRepository, EmpresaRepository empresaRepository) {
+    public PuestoServiceImpl(PuestoRepository puestoRepository, EmpresaRepository empresaRepository, PuestoCaracteristicaRepository puestoCaracteristicaRepository, CaracteristicaRepository caracteristicaRepository) {
         this.puestoRepository = puestoRepository;
         this.empresaRepository = empresaRepository;
+        this.puestoCaracteristicaRepository = puestoCaracteristicaRepository;
+        this.caracteristicaRepository = caracteristicaRepository;
     }
 
     @Override
@@ -54,11 +65,39 @@ public class PuestoServiceImpl implements PuestoService {
         puesto.setTitulo(dto.getTitulo());
         puesto.setDescripcion(dto.getDescripcion());
         puesto.setSalario(dto.getSalario());
-        puesto.setTipoPublicacion(TipoPublicacion.PUBLICO.name());
+
+        puesto.setTipoPublicacion(dto.getTipoPublicacion().toUpperCase());
         puesto.setEstado(EstadoPuesto.ACTIVO.name());
         puesto.setFechaPublicacion(Instant.now());
 
-        return puestoRepository.save(puesto);
+        puesto = puestoRepository.save(puesto);
+
+        if (dto.getCaracteristicasRequeridas() != null) {
+            for (CaracteristicaNivelDto carDto : dto.getCaracteristicasRequeridas()) {
+                if (carDto.getIdCaracteristica() == null || carDto.getNivel() == null) {
+                    continue; // fila vacía → ignorar
+                }
+
+                Caracteristica caracteristica = caracteristicaRepository.findById(carDto.getIdCaracteristica())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Característica con ID " + carDto.getIdCaracteristica() + " no encontrada"));
+
+                PuestoCaracteristica pc = new PuestoCaracteristica();
+
+                PuestoCaracteristicaId id = new PuestoCaracteristicaId();
+                id.setIdPuesto(puesto.getId());
+                id.setIdCaracteristica(carDto.getIdCaracteristica());
+                pc.setId(id);
+
+                pc.setPuesto(puesto);
+                pc.setCaracteristica(caracteristica);
+                pc.setNivelRequerido(carDto.getNivel());
+
+                puestoCaracteristicaRepository.save(pc);
+            }
+        }
+
+        return puesto;
     }
 
     @Override
@@ -68,6 +107,12 @@ public class PuestoServiceImpl implements PuestoService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Puesto no encontrado"));
         puesto.setEstado(EstadoPuesto.INACTIVO.name());
         puestoRepository.save(puesto);
+    }
+
+    @Override
+    public List<Puesto> obtenerTodosLosPuestos() {
+
+        return puestoRepository.findAllByOrderByFechaPublicacionDesc();
     }
 }
 
