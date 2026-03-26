@@ -47,10 +47,11 @@
                 </tr>
                 <tr th:each="empresa : ${empresas}">
                     <td th:text="${empresa.nombre}"></td>
-                    <td th:text="${empresa.correo}"></td>
+                    <td th:text="${empresa.usuario.correo}"></td>
                     <td th:text="${empresa.telefono}"></td>
                     <td>
-                        <form th:action="@{/admin/usuarios/{id}/aprobar(id=${empresa.id})}" method="post" style="display:inline;">
+                        <form th:action="@{/admin/usuarios/{id}/aprobar(id=${empresa.usuario.id})}" method="post" style="display:inline;">
+                            <input type="hidden" name="origen" value="empresa">
                             <button type="submit" class="btn btn-sm btn-primary">Aprobar</button>
                         </form>
                     </td>

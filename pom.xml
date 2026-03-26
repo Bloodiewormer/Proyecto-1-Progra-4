@@ -91,18 +91,18 @@
 
         <dependency>
             <groupId>com.itextpdf</groupId>
-            <artifactId>itext-kernel</artifactId>
-            <version>8.0.5</version>
+            <artifactId>kernel</artifactId>
+            <version>7.2.5</version>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
-            <artifactId>itext-layout</artifactId>
-            <version>8.0.5</version>
+            <artifactId>layout</artifactId>
+            <version>7.2.5</version>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
-            <artifactId>itext-io</artifactId>
-            <version>8.0.5</version>
+            <artifactId>io</artifactId>
+            <version>7.2.5</version>
         </dependency>
 
 
