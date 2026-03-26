@@ -68,7 +68,7 @@
                         <span th:if="${#lists.isEmpty(puesto.puestoCaracteristicas)}" class="text-muted">Sin características</span>
                     </td>
                     <td>
-                        <a th:href="@{/empresa/candidatos}" class="btn btn-sm btn-outline-primary">Ver candidatos</a>
+                        <a th:href="@{/empresa/candidatos(idPuesto=${puesto.id})}" class="btn btn-sm btn-outline-primary">Ver candidatos</a>
 
                         <!-- NUEVO: Formulario SSR para desactivar (sin JavaScript) -->
                         <form th:action="@{/empresa/puestos/{idPuesto}/desactivar(idPuesto=${puesto.id})}"

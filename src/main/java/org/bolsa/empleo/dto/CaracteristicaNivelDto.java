@@ -5,10 +5,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public class CaracteristicaNivelDto {
-    @NotNull
     private Integer idCaracteristica;
 
-    @NotNull
     @Min(1)
     @Max(5)
     private Integer nivel;

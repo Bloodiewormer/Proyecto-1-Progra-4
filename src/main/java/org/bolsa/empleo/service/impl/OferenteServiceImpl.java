@@ -101,7 +101,12 @@ public class OferenteServiceImpl implements OferenteService {
 
             if (score > 0) {
                 String nombreCompleto = oferente.getNombre() + " " + oferente.getApellido();
-                resultados.add(new OferenteMatchDto(oferente.getId(), nombreCompleto.trim(), score));
+                resultados.add(new OferenteMatchDto(
+                        oferente.getId(),
+                        nombreCompleto.trim(),
+                        score,
+                        requeridas.size()   // total de características requeridas por el puesto
+                ));
             }
         }
 

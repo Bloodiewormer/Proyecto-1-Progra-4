@@ -49,6 +49,7 @@
                     </tr>
                     <tr th:each="puesto : ${puestos}">
                         <td th:text="${puesto.titulo}"></td>
+                        <td th:text="${candidato.scoreCoincidencia} + ' / ' + ${candidato.totalRequeridas}"></td>
                         <td th:text="${#numbers.formatDecimal(puesto.salario, 1, 'COMMA', 2, 'POINT')}"></td>
                         <td>
                             <span class="badge" th:classappend="${puesto.tipoPublicacion == 'PUBLICO'} ? 'bg-success' : 'bg-secondary'"
@@ -74,6 +75,7 @@
                     <thead>
                     <tr>
                         <th>Nombre del candidato</th>
+                        <th>Requisitos cumplidos</th>
                         <th>% Coincidencia</th>
                         <th>Acción</th>
                     </tr>
@@ -85,10 +87,12 @@
                     <tr th:each="candidato : ${candidatos}">
                         <td th:text="${candidato.nombre}"></td>
                         <td>
-                            <span class="badge bg-success" th:text="${candidato.scoreCoincidencia} + ' características coinciden'"></span>
+                            <span class="badge bg-success"
+                                  th:text="${#numbers.formatDecimal(candidato.porcentajeCoincidencia, 1, 'POINT', 2, 'POINT')} + '%'">
+                            </span>
                         </td>
                         <td>
-                            <a th:href="@{/empresa/detalle-candidato}"
+                            <a th:href="@{/empresa/detalle-candidato(idOferente=${candidato.idOferente})}"
                                class="btn btn-sm btn-outline-primary">Ver detalle</a>
                         </td>
                     </tr>

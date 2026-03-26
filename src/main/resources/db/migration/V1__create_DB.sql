@@ -3,10 +3,13 @@ CREATE TABLE `usuario` (
                            `correo` varchar(255) UNIQUE,
                            `identificacion` varchar(255) UNIQUE,
                            `password_hash` varchar(255) NOT NULL,
-                           `password_salt` varchar(255) NOT NULL,
                            `rol` varchar(255) NOT NULL COMMENT 'ENUM: ADMIN | EMPRESA | OFERENTE',
                            `estado` varchar(255) NOT NULL DEFAULT 'PENDIENTE' COMMENT 'ENUM: PENDIENTE | ACTIVO | INACTIVO — ADMIN se inserta como ACTIVO',
-                           `fecha_creacion` datetime DEFAULT (CURRENT_TIMESTAMP)
+                           `fecha_creacion` datetime DEFAULT (CURRENT_TIMESTAMP),
+                           CONSTRAINT chk_usuario_credenciales CHECK (
+                               (rol = 'ADMIN' AND identificacion IS NOT NULL AND correo IS NULL) OR
+                               (rol IN ('EMPRESA', 'OFERENTE') AND correo IS NOT NULL AND identificacion IS NULL)
+                           )
 );
 
 CREATE TABLE `empresa` (
@@ -38,7 +41,8 @@ CREATE TABLE `puesto` (
                           `salario` decimal NOT NULL COMMENT 'CK: salario > 0',
                           `tipo_publicacion` varchar(255) NOT NULL COMMENT 'ENUM: PUBLICO | PRIVADO',
                           `fecha_publicacion` timestamp DEFAULT (CURRENT_TIMESTAMP),
-                          `estado` varchar(255) NOT NULL DEFAULT 'ACTIVO' COMMENT 'ENUM: ACTIVO | INACTIVO'
+                          `estado` varchar(255) NOT NULL DEFAULT 'ACTIVO' COMMENT 'ENUM: ACTIVO | INACTIVO',
+                          CONSTRAINT chk_puesto_salario CHECK (salario > 0)
 );
 
 CREATE TABLE `caracteristica` (
@@ -51,17 +55,18 @@ CREATE TABLE `oferente_caracteristica` (
                                            `id_oferente` int NOT NULL,
                                            `id_caracteristica` int NOT NULL,
                                            `nivel` int NOT NULL COMMENT 'CK: nivel BETWEEN 1 AND 5',
-                                           PRIMARY KEY (`id_oferente`, `id_caracteristica`)
+                                           PRIMARY KEY (`id_oferente`, `id_caracteristica`),
+                                           CONSTRAINT chk_oferente_caracteristica_nivel CHECK (nivel BETWEEN 1 AND 5)
 );
 
 CREATE TABLE `puesto_caracteristica` (
                                          `id_puesto` int NOT NULL,
                                          `id_caracteristica` int NOT NULL,
                                          `nivel_requerido` int NOT NULL COMMENT 'CK: nivel_requerido BETWEEN 1 AND 5',
-                                         PRIMARY KEY (`id_puesto`, `id_caracteristica`)
+                                         PRIMARY KEY (`id_puesto`, `id_caracteristica`),
+                                         CONSTRAINT chk_puesto_caracteristica_nivel CHECK (nivel_requerido BETWEEN 1 AND 5)
 );
 
-ALTER TABLE `usuario` COMMENT = 'CK: si rol=ADMIN entonces identificacion NOT NULL y correo NULL. Si rol!=ADMIN entonces correo NOT NULL y identificacion NULL';
 
 ALTER TABLE `empresa` ADD FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE RESTRICT;
 

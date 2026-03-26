@@ -41,7 +41,7 @@ public class PuestoServiceImpl implements PuestoService {
 
     @Override
     public List<Puesto> listarRecientes() {
-        return puestoRepository.findByEstadoOrderByFechaPublicacionDesc(EstadoPuesto.ACTIVO.name(), PageRequest.of(0, 10));
+        return puestoRepository.findByEstadoOrderByFechaPublicacionDesc(EstadoPuesto.ACTIVO.name(), PageRequest.of(0, 5));
     }
 
     @Override

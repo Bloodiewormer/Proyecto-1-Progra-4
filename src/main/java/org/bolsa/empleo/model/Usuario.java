@@ -30,11 +30,6 @@ public class Usuario {
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "password_salt", nullable = false)
-    private String passwordSalt;
-
-    @Size(max = 255)
-    @NotNull
     @Column(name = "rol", nullable = false)
     private String rol;
 
@@ -78,14 +73,6 @@ public class Usuario {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
-    }
-
-    public String getPasswordSalt() {
-        return passwordSalt;
-    }
-
-    public void setPasswordSalt(String passwordSalt) {
-        this.passwordSalt = passwordSalt;
     }
 
     public String getRol() {

@@ -52,9 +52,8 @@ public class AuthServiceImpl implements AuthService {
         usuario.setRol(Rol.EMPRESA.name());
         usuario.setEstado(EstadoUsuario.PENDIENTE.name());
 
-        // BCrypt genera y embebe el salt automáticamente en el hash
+
         usuario.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
-        usuario.setPasswordSalt("");   // ya no se usa; se mantiene para no alterar esquema BD
 
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
 
@@ -82,7 +81,6 @@ public class AuthServiceImpl implements AuthService {
         usuario.setEstado(EstadoUsuario.PENDIENTE.name());
 
         usuario.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
-        usuario.setPasswordSalt("");
 
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
 
