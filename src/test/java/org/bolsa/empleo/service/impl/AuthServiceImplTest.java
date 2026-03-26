@@ -1,112 +1,72 @@
 package org.bolsa.empleo.service.impl;
 
-import org.bolsa.empleo.dto.LoginRequestDto;
-import org.bolsa.empleo.dto.LoginResponseDto;
+import org.bolsa.empleo.dto.RegistroEmpresaDto;
+import org.bolsa.empleo.model.Empresa;
 import org.bolsa.empleo.model.Usuario;
 import org.bolsa.empleo.repository.EmpresaRepository;
 import org.bolsa.empleo.repository.OferenteRepository;
 import org.bolsa.empleo.repository.UsuarioRepository;
-import org.bolsa.empleo.util.PasswordHashUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceImplTest {
 
-    @Mock
-    private UsuarioRepository usuarioRepository;
-    @Mock
-    private EmpresaRepository empresaRepository;
-
-    @Mock
-    private OferenteRepository oferenteRepository;
+    @Mock private UsuarioRepository  usuarioRepository;
+    @Mock private EmpresaRepository  empresaRepository;
+    @Mock private OferenteRepository oferenteRepository;
 
     private AuthServiceImpl authService;
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setUp() {
+        passwordEncoder = new BCryptPasswordEncoder();
         authService = new AuthServiceImpl(
-                usuarioRepository,
-                empresaRepository,
-                oferenteRepository
-        );
-
+                usuarioRepository, empresaRepository, oferenteRepository, passwordEncoder);
     }
 
     @Test
-    void loginExitosoConCorreo() {
-        LoginRequestDto request = new LoginRequestDto();
-        request.setCredencial("empresa@demo.com");
-        request.setClave("Secreta123");
+    void registrarEmpresaGuardaUsuarioConHashBcrypt() {
+        RegistroEmpresaDto dto = new RegistroEmpresaDto();
+        dto.setNombre("Empresa Test");
+        dto.setIdentificacion("3-101-123456");
+        dto.setCorreo("empresa@test.com");
+        dto.setTelefono("2222-3333");
+        dto.setLocalizacion("San José");
+        dto.setDescripcion("Empresa de prueba");
+        dto.setPassword("MiClave123");
 
-        Usuario usuario = new Usuario();
-        usuario.setId(10);
-        usuario.setCorreo("empresa@demo.com");
-        usuario.setRol("EMPRESA");
-        usuario.setEstado("ACTIVO");
-        usuario.setPasswordSalt("SALT01");
-        usuario.setPasswordHash(PasswordHashUtil.hash("Secreta123", "SALT01"));
+        Usuario usuarioGuardado = new Usuario();
+        usuarioGuardado.setId(1);
+        when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuarioGuardado);
 
-        when(usuarioRepository.findByCorreoIgnoreCaseOrIdentificacion("empresa@demo.com", "empresa@demo.com"))
-                .thenReturn(Optional.of(usuario));
+        authService.registrarEmpresa(dto);
 
-        LoginResponseDto response = authService.login(request);
+        // Capturar el usuario que se intentó persistir
+        ArgumentCaptor<Usuario> captor = ArgumentCaptor.forClass(Usuario.class);
+        verify(usuarioRepository).save(captor.capture());
 
-        assertEquals(10, response.getIdUsuario());
-        assertEquals("EMPRESA", response.getRol());
-    }
+        Usuario usuario = captor.getValue();
+        assertEquals("EMPRESA", usuario.getRol());
+        assertEquals("PENDIENTE", usuario.getEstado());
 
-    @Test
-    void loginFallaPorClaveInvalida() {
-        LoginRequestDto request = new LoginRequestDto();
-        request.setCredencial("admin001");
-        request.setClave("incorrecta");
+        // Verificar que el hash almacenado corresponde a la contraseña original
+        assertTrue(passwordEncoder.matches("MiClave123", usuario.getPasswordHash()),
+                "El hash BCrypt debe corresponder a la contraseña original");
 
-        Usuario usuario = new Usuario();
-        usuario.setIdentificacion("admin001");
-        usuario.setRol("ADMIN");
-        usuario.setEstado("ACTIVO");
-        usuario.setPasswordSalt("SALT02");
-        usuario.setPasswordHash(PasswordHashUtil.hash("Correcta123", "SALT02"));
-
-        when(usuarioRepository.findByCorreoIgnoreCaseOrIdentificacion("admin001", "admin001"))
-                .thenReturn(Optional.of(usuario));
-
-        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> authService.login(request));
-
-        assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
-    }
-
-    @Test
-    void loginFallaPorUsuarioNoActivo() {
-        LoginRequestDto request = new LoginRequestDto();
-        request.setCredencial("oferente@demo.com");
-        request.setClave("Clave123");
-
-        Usuario usuario = new Usuario();
-        usuario.setCorreo("oferente@demo.com");
-        usuario.setRol("OFERENTE");
-        usuario.setEstado("PENDIENTE");
-        usuario.setPasswordSalt("SALT03");
-        usuario.setPasswordHash(PasswordHashUtil.hash("Clave123", "SALT03"));
-
-        when(usuarioRepository.findByCorreoIgnoreCaseOrIdentificacion("oferente@demo.com", "oferente@demo.com"))
-                .thenReturn(Optional.of(usuario));
-
-        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> authService.login(request));
-
-        assertEquals(HttpStatus.FORBIDDEN, ex.getStatusCode());
+        // Verificar que también se guardó la empresa
+        verify(empresaRepository).save(any(Empresa.class));
     }
 }
-

@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
     Optional<Empresa> findByUsuarioId(Integer idUsuario);
+    Optional<Empresa> findByUsuarioCorreoIgnoreCase(String correo);
 }
-
