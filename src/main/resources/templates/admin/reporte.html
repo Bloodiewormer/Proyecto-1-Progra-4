@@ -12,7 +12,6 @@
     <nav class="navbar topbar-custom">
         <div class="container d-flex justify-content-between align-items-center">
             <a class="navbar-brand d-flex align-items-center text-decoration-none" th:href="@{/admin/dashboard}">
-                <img th:src="@{/img/logo.png}" alt="Logo" class="site-logo">
                 <span class="brand-text">Panel Admin</span>
             </a>
             <div class="nav-links-custom">
@@ -21,6 +20,9 @@
                 <a class="nav-link" th:href="@{/admin/oferentes-pendientes}">Oferentes</a>
                 <a class="nav-link" th:href="@{/admin/caracteristicas}">Características</a>
                 <a class="nav-link" th:href="@{/admin/reporte}">Reporte</a>
+                <form class="d-inline" th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-sm btn-outline-light ms-2">Cerrar sesión</button>
+                </form>
             </div>
         </div>
     </nav>
@@ -28,50 +30,72 @@
 
 <main class="main-content">
     <section class="container page-section">
-        <h1 class="page-title">Reporte</h1>
-        <p class="page-subtitle">Resumen general del sistema</p>
+        <h1 class="page-title">Reporte general</h1>
+        <p class="page-subtitle">Resumen de datos del sistema</p>
 
+        <!-- Tarjetas de resumen -->
         <div class="row g-4 mb-4">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="stats-card">
-                    <div class="stats-number">34</div>
-                    <div class="stats-label">Puestos publicados</div>
+                    <div class="stats-number" th:text="${totalEmpresas}">0</div>
+                    <div class="stats-label">Empresas registradas</div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="stats-card">
-                    <div class="stats-number">120</div>
-                    <div class="stats-label">Usuarios registrados</div>
+                    <div class="stats-number" th:text="${totalOferentes}">0</div>
+                    <div class="stats-label">Oferentes registrados</div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="stats-card">
-                    <div class="stats-number">56</div>
-                    <div class="stats-label">Postulaciones</div>
+                    <div class="stats-number" th:text="${puestosActivos}">0</div>
+                    <div class="stats-label">Puestos activos</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${puestosInactivos}">0</div>
+                    <div class="stats-label">Puestos cerrados</div>
                 </div>
             </div>
         </div>
 
+        <!-- Tabla de todos los puestos -->
         <div class="table-card">
+            <h5 class="panel-title mb-3">Listado de puestos</h5>
             <table class="table table-bordered align-middle">
                 <thead>
                 <tr>
-                    <th>Métrica</th>
-                    <th>Valor</th>
+                    <th>#</th>
+                    <th>Empresa</th>
+                    <th>Puesto</th>
+                    <th>Salario</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Fecha publicación</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Empresas aprobadas</td>
-                    <td>20</td>
+                <tr th:if="${#lists.isEmpty(puestos)}">
+                    <td colspan="7" class="text-center text-muted">No hay puestos registrados.</td>
                 </tr>
-                <tr>
-                    <td>Oferentes aprobados</td>
-                    <td>100</td>
-                </tr>
-                <tr>
-                    <td>Puestos activos</td>
-                    <td>18</td>
+                <tr th:each="puesto, stat : ${puestos}">
+                    <td th:text="${stat.count}"></td>
+                    <td th:text="${puesto.empresa.nombre}"></td>
+                    <td th:text="${puesto.titulo}"></td>
+                    <td th:text="${#numbers.formatDecimal(puesto.salario, 1, 'COMMA', 2, 'POINT')}"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${puesto.tipoPublicacion == 'PUBLICO'} ? 'bg-success' : 'bg-secondary'"
+                              th:text="${puesto.tipoPublicacion}"></span>
+                    </td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${puesto.estado == 'ACTIVO'} ? 'bg-success' : 'bg-danger'"
+                              th:text="${puesto.estado}"></span>
+                    </td>
+                    <td th:text="${#temporals.format(puesto.fechaPublicacion, 'dd/MM/yyyy')}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -81,14 +105,8 @@
 
 <footer class="footer-custom">
     <div class="container d-flex justify-content-between">
-        <div class="footer-left">
-            <strong>Bolsa de Empleo</strong><br>
-            Módulo Administración
-        </div>
-        <div class="footer-right text-end">
-            Contacto: admin@bolsaempleo.local<br>
-            Créditos: Equipo de desarrollo
-        </div>
+        <div class="footer-left"><strong>Bolsa de Empleo</strong><br>Módulo Administración</div>
+        <div class="footer-right text-end">Contacto: admin@bolsaempleo.local<br>Créditos: Equipo de desarrollo</div>
     </div>
 </footer>
 </body>

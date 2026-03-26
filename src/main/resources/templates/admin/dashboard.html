@@ -12,7 +12,6 @@
     <nav class="navbar topbar-custom">
         <div class="container d-flex justify-content-between align-items-center">
             <a class="navbar-brand d-flex align-items-center text-decoration-none" th:href="@{/admin/dashboard}">
-                <img th:src="@{/img/logo.png}" alt="Logo" class="site-logo">
                 <span class="brand-text">Panel Admin</span>
             </a>
             <div class="nav-links-custom">
@@ -34,30 +33,40 @@
         <h1 class="page-title">Dashboard Administrador</h1>
         <p class="page-subtitle">Panel principal de administración</p>
 
-        <div class="row g-4">
+        <div class="row g-4 mb-4">
             <div class="col-md-3">
                 <div class="stats-card">
-                    <div class="stats-number">12</div>
+                    <div class="stats-number" th:text="${empresasPendientes}">0</div>
                     <div class="stats-label">Empresas pendientes</div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stats-card">
-                    <div class="stats-number">9</div>
+                    <div class="stats-number" th:text="${oferentesPendientes}">0</div>
                     <div class="stats-label">Oferentes pendientes</div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stats-card">
-                    <div class="stats-number">18</div>
+                    <div class="stats-number" th:text="${totalCaracteristicas}">0</div>
                     <div class="stats-label">Características</div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stats-card">
-                    <div class="stats-number">34</div>
-                    <div class="stats-label">Puestos publicados</div>
+                    <div class="stats-number" th:text="${totalPuestos}">0</div>
+                    <div class="stats-label">Puestos registrados</div>
                 </div>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <div class="panel-title">Acciones rápidas</div>
+            <div class="panel-actions">
+                <a th:href="@{/admin/empresas-pendientes}" class="btn btn-primary">Ver empresas pendientes</a>
+                <a th:href="@{/admin/oferentes-pendientes}" class="btn btn-outline-primary">Ver oferentes pendientes</a>
+                <a th:href="@{/admin/caracteristicas}" class="btn btn-outline-secondary">Gestionar características</a>
+                <a th:href="@{/admin/reporte}" class="btn btn-outline-secondary">Ver reporte</a>
             </div>
         </div>
     </section>
@@ -65,14 +74,8 @@
 
 <footer class="footer-custom">
     <div class="container d-flex justify-content-between">
-        <div class="footer-left">
-            <strong>Bolsa de Empleo</strong><br>
-            Módulo Administración
-        </div>
-        <div class="footer-right text-end">
-            Contacto: admin@bolsaempleo.local<br>
-            Créditos: Equipo de desarrollo
-        </div>
+        <div class="footer-left"><strong>Bolsa de Empleo</strong><br>Módulo Administración</div>
+        <div class="footer-right text-end">Contacto: admin@bolsaempleo.local<br>Créditos: Equipo de desarrollo</div>
     </div>
 </footer>
 </body>

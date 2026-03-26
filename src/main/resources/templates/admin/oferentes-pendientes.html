@@ -12,7 +12,6 @@
     <nav class="navbar topbar-custom">
         <div class="container d-flex justify-content-between align-items-center">
             <a class="navbar-brand d-flex align-items-center text-decoration-none" th:href="@{/admin/dashboard}">
-                <img th:src="@{/img/logo.png}" alt="Logo" class="site-logo">
                 <span class="brand-text">Panel Admin</span>
             </a>
             <div class="nav-links-custom">
@@ -21,6 +20,9 @@
                 <a class="nav-link" th:href="@{/admin/oferentes-pendientes}">Oferentes</a>
                 <a class="nav-link" th:href="@{/admin/caracteristicas}">Características</a>
                 <a class="nav-link" th:href="@{/admin/reporte}">Reporte</a>
+                <form class="d-inline" th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-sm btn-outline-light ms-2">Cerrar sesión</button>
+                </form>
             </div>
         </div>
     </nav>
@@ -29,7 +31,7 @@
 <main class="main-content">
     <section class="container page-section">
         <h1 class="page-title">Oferentes pendientes</h1>
-        <p class="page-subtitle">Usuarios en espera de validación</p>
+        <p class="page-subtitle">Solicitudes pendientes de aprobación</p>
 
         <div class="table-card">
             <table class="table table-bordered align-middle">
@@ -37,21 +39,29 @@
                 <tr>
                     <th>Nombre</th>
                     <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Residencia</th>
                     <th>Identificación</th>
                     <th>Acción</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:if="${#lists.isEmpty(oferentes)}">
-                    <td colspan="4" class="text-center text-muted">No hay oferentes pendientes.</td>
+                    <td colspan="6" class="text-center text-muted">No hay oferentes pendientes de aprobación.</td>
                 </tr>
                 <tr th:each="oferente : ${oferentes}">
-                    <td th:text="${oferente.nombre} + ' ' + ${oferente.apellido}"></td>
-                    <td th:text="${oferente.correo}"></td>
-                    <td th:text="${oferente.identificacion}"></td>
+                    <td th:text="${oferente.nombre + ' ' + oferente.apellido}"></td>
+                    <td th:text="${oferente.usuario.correo}"></td>
+                    <td th:text="${oferente.telefono}"></td>
+                    <td th:text="${oferente.residencia}"></td>
+                    <td th:text="${oferente.numIdentificacion}"></td>
                     <td>
-                        <form th:action="@{/admin/usuarios/{id}/aprobar(id=${oferente.id})}" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-sm btn-primary">Aprobar</button>
+                        <form th:action="@{/admin/usuarios/{id}/aprobar(id=${oferente.usuario.id})}"
+                              method="post" style="display:inline;">
+                            <input type="hidden" name="origen" value="oferente">
+                            <button type="submit" class="btn btn-sm btn-success">
+                                ✓ Aprobar
+                            </button>
                         </form>
                     </td>
                 </tr>
@@ -63,14 +73,8 @@
 
 <footer class="footer-custom">
     <div class="container d-flex justify-content-between">
-        <div class="footer-left">
-            <strong>Bolsa de Empleo</strong><br>
-            Módulo Administración
-        </div>
-        <div class="footer-right text-end">
-            Contacto: admin@bolsaempleo.local<br>
-            Créditos: Equipo de desarrollo
-        </div>
+        <div class="footer-left"><strong>Bolsa de Empleo</strong><br>Módulo Administración</div>
+        <div class="footer-right text-end">Contacto: admin@bolsaempleo.local<br>Créditos: Equipo de desarrollo</div>
     </div>
 </footer>
 </body>

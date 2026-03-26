@@ -12,7 +12,6 @@
     <nav class="navbar topbar-custom">
         <div class="container d-flex justify-content-between align-items-center">
             <a class="navbar-brand d-flex align-items-center text-decoration-none" th:href="@{/oferente/dashboard}">
-                <img th:src="@{/img/logo.png}" alt="Logo" class="site-logo">
                 <span class="brand-text">Panel Oferente</span>
             </a>
             <div class="nav-links-custom">
@@ -27,9 +26,10 @@
 <main class="main-content">
     <section class="container page-section">
         <h1 class="page-title">Mis habilidades</h1>
-        <p class="page-subtitle">Agregue y administre sus conocimientos</p>
+        <p class="page-subtitle">Agregue y administre sus conocimientos (máximo 5)</p>
 
-        <form th:action="@{/api/oferente/habilidades}" method="post" th:object="${habilidades}">
+        <!-- POST a endpoint SSR, no a /api/ -->
+        <form th:action="@{/oferente/habilidades}" method="post">
             <div class="panel-card mb-4">
                 <table class="table table-bordered">
                     <thead>
@@ -39,18 +39,20 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="i : ${#numbers.sequence(0,4)}">
+                    <tr th:each="hab, stat : ${habilidades}">
                         <td>
-                            <select class="form-select" th:field="*{__${i}__.idCaracteristica}">
+                            <select class="form-select" name="idCaracteristica">
                                 <option value="">-- Seleccione --</option>
                                 <option th:each="car : ${caracteristicas}"
                                         th:value="${car.id}"
-                                        th:text="${car.nombre}"></option>
+                                        th:text="${car.nombre}"
+                                        th:selected="${hab.idCaracteristica != null and hab.idCaracteristica == car.id}">
+                                </option>
                             </select>
                         </td>
                         <td>
-                            <input type="number" class="form-control" min="1" max="5"
-                                   th:field="*{__${i}__.nivel}">
+                            <input type="number" class="form-control" name="nivel"
+                                   min="1" max="5" th:value="${hab.nivel}">
                         </td>
                     </tr>
                     </tbody>
@@ -59,6 +61,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Guardar habilidades</button>
+                <a th:href="@{/oferente/dashboard}" class="btn btn-outline-secondary">Cancelar</a>
             </div>
         </form>
     </section>
@@ -66,14 +69,8 @@
 
 <footer class="footer-custom">
     <div class="container d-flex justify-content-between">
-        <div class="footer-left">
-            <strong>Bolsa de Empleo</strong><br>
-            Módulo Oferente
-        </div>
-        <div class="footer-right text-end">
-            Contacto: oferente@bolsaempleo.local<br>
-            Créditos: Equipo de desarrollo
-        </div>
+        <div class="footer-left"><strong>Bolsa de Empleo</strong><br>Módulo Oferente</div>
+        <div class="footer-right text-end">Contacto: oferente@bolsaempleo.local<br>Créditos: Equipo de desarrollo</div>
     </div>
 </footer>
 </body>
