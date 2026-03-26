@@ -1,41 +1,49 @@
 package org.bolsa.empleo.controller;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.bolsa.empleo.dto.LoginRequestDto;
-import org.bolsa.empleo.dto.LoginResponseDto;
-import org.bolsa.empleo.dto.RegistroEmpresaDto;   // NUEVO
+import org.bolsa.empleo.dto.RegistroEmpresaDto;
 import org.bolsa.empleo.dto.RegistroOferenteDto;
 import org.bolsa.empleo.service.AuthService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
-@RequestMapping
 public class AuthController {
+
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
+    // ─────────────────────────────────────────────
+    // Login
+    // ─────────────────────────────────────────────
+
+    /**
+     * Muestra la página de login.
+     * Spring Security pasa automáticamente:
+     *  - ?error=true  cuando las credenciales son incorrectas
+     *  - ?logout=true cuando el usuario cerró sesión
+     */
     @GetMapping("/login")
-    public String mostrarLogin() {
+    public String mostrarLogin(@RequestParam(required = false) String error,
+                               @RequestParam(required = false) String logout,
+                               Model model) {
+        if (error != null)  model.addAttribute("loginError",  true);
+        if (logout != null) model.addAttribute("logoutMsg",   true);
         return "auth/login";
     }
 
-    @PostMapping("/api/auth/login")
-    @ResponseBody
-    public ResponseEntity<LoginResponseDto> procesarLogin(@Valid @RequestBody LoginRequestDto dto, HttpSession session) {
-        LoginResponseDto response = authService.login(dto);
-        session.setAttribute("usuarioId", response.getIdUsuario());
-        session.setAttribute("rol", response.getRol());
-        return ResponseEntity.ok(response);
-    }
-
+    // ─────────────────────────────────────────────
+    // Registro empresa
+    // ─────────────────────────────────────────────
     @GetMapping("/registro/empresa")
     public String registroEmpresa(Model model) {
         if (!model.containsAttribute("empresaDto")) {
@@ -54,13 +62,16 @@ public class AuthController {
         try {
             authService.registrarEmpresa(dto);
             model.addAttribute("success", true);
-            model.addAttribute("empresaDto", new RegistroEmpresaDto()); // limpia form
+            model.addAttribute("empresaDto", new RegistroEmpresaDto());
         } catch (Exception e) {
             model.addAttribute("error", "Error al registrar empresa: " + e.getMessage());
         }
         return "auth/registro-empresa";
     }
 
+    // ─────────────────────────────────────────────
+    // Registro oferente
+    // ─────────────────────────────────────────────
     @GetMapping("/registro/oferente")
     public String registroOferente(Model model) {
         if (!model.containsAttribute("oferenteDto")) {
@@ -70,36 +81,19 @@ public class AuthController {
     }
 
     @PostMapping("/registro/oferente")
-    public String registrarOferente(@Valid @ModelAttribute("oferenteDto") RegistroOferenteDto dto, // NUEVO
-                                    BindingResult bindingResult,                               // NUEVO
-                                    Model model) {                                             // NUEVO
+    public String registrarOferente(@Valid @ModelAttribute("oferenteDto") RegistroOferenteDto dto,
+                                    BindingResult bindingResult,
+                                    Model model) {
         if (bindingResult.hasErrors()) {
             return "auth/registro-oferente";
         }
         try {
-            authService.registrarOferente(dto);          // NUEVO - llama al service
+            authService.registrarOferente(dto);
             model.addAttribute("success", true);
-            model.addAttribute("oferenteDto", new RegistroOferenteDto()); // limpia form
+            model.addAttribute("oferenteDto", new RegistroOferenteDto());
         } catch (Exception e) {
             model.addAttribute("error", "Error al registrar oferente: " + e.getMessage());
         }
         return "auth/registro-oferente";
     }
-
-    @PostMapping("/api/auth/logout")
-    @ResponseBody
-    public ResponseEntity<Void> logout(HttpSession session) {
-        authService.logout();
-        session.invalidate();
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/logout")
-    public String logoutDesdeVista(HttpSession session) {
-        authService.logout();
-        session.invalidate();
-        return "redirect:/login";
-    }
-
 }
-
