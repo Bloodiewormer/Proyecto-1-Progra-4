@@ -9,8 +9,17 @@
 
 <main class="main-content">
     <section class="container page-section">
-        <h1 class="page-title">Reporte general</h1>
-        <p class="page-subtitle">Resumen de datos del sistema</p>
+
+        <div class="d-flex justify-content-between align-items-start mb-4">
+            <div>
+                <h1 class="page-title">Reporte general</h1>
+                <p class="page-subtitle">Resumen de datos del sistema</p>
+            </div>
+            <!-- Botón de descarga PDF -->
+            <a th:href="@{/admin/reporte/pdf}" class="btn btn-danger">
+                Descargar reporte PDF
+            </a>
+        </div>
 
         <div class="row g-4 mb-4">
             <div class="col-md-3">

@@ -10,13 +10,15 @@
 <main class="main-content">
     <section class="container page-section">
         <h1 class="page-title">Buscar puestos</h1>
-        <p class="page-subtitle">Filtre por nombre, empresa o salario</p>
+        <p class="page-subtitle">Filtre por características, nombre o salario</p>
 
         <div class="form-card mb-4">
             <form class="row g-3" th:action="@{/buscar}" th:object="${filtro}" method="post">
+
+                <!-- Filtros de texto y salario -->
                 <div class="col-md-4">
-                    <label class="form-label">Palabra clave (puesto o empresa)</label>
-                    <input type="text" class="form-control" th:field="*{palabraClave}" placeholder="Nombre del puesto">
+                    <label class="form-label">Palabra clave</label>
+                    <input type="text" class="form-control" th:field="*{palabraClave}" placeholder="Nombre del puesto...">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Salario mínimo</label>
@@ -26,6 +28,39 @@
                     <label class="form-label">Salario máximo</label>
                     <input type="number" class="form-control" th:field="*{salarioMax}" placeholder="0">
                 </div>
+
+                <!-- Árbol jerárquico de características -->
+                <div class="col-12" th:if="${not #lists.isEmpty(raices)}">
+                    <label class="form-label fw-semibold">Características requeridas</label>
+                    <div class="panel-card" style="max-height: 280px; overflow-y: auto; padding: 0.75rem 1rem;">
+                        <th:block th:each="raiz : ${raices}">
+                            <!-- Categoría raíz -->
+                            <div class="mb-1 mt-2">
+                                <input type="checkbox"
+                                       name="idsCaracteristicas"
+                                       th:value="${raiz.id}"
+                                       th:checked="${filtro.idsCaracteristicas != null and #lists.contains(filtro.idsCaracteristicas, raiz.id)}"
+                                       th:id="'car_' + ${raiz.id}">
+                                <label th:for="'car_' + ${raiz.id}"
+                                       class="fw-semibold"
+                                       th:text="${raiz.nombre}"></label>
+                            </div>
+                            <!-- Hijos de esta raíz -->
+                            <th:block th:each="car : ${todasCaracteristicas}">
+                                <div th:if="${car.padre != null and car.padre.id == raiz.id}"
+                                     style="margin-left: 22px;" class="mb-1">
+                                    <input type="checkbox"
+                                           name="idsCaracteristicas"
+                                           th:value="${car.id}"
+                                           th:checked="${filtro.idsCaracteristicas != null and #lists.contains(filtro.idsCaracteristicas, car.id)}"
+                                           th:id="'car_' + ${car.id}">
+                                    <label th:for="'car_' + ${car.id}" th:text="${car.nombre}"></label>
+                                </div>
+                            </th:block>
+                        </th:block>
+                    </div>
+                </div>
+
                 <div class="col-12 form-actions">
                     <button type="submit" class="btn btn-primary">Buscar</button>
                     <a th:href="@{/buscar}" class="btn btn-outline-secondary">Limpiar</a>
@@ -33,20 +68,33 @@
             </form>
         </div>
 
-        <div class="row g-4" th:if="${resultados != null}">
-            <div th:each="puesto : ${resultados}" class="col-md-6">
-                <div class="job-card">
-                    <div class="job-company" th:text="${puesto.empresa.nombre}"></div>
-                    <div class="job-title" th:text="${puesto.titulo}"></div>
-                    <div class="job-salary"
-                         th:text="${#numbers.formatDecimal(puesto.salario, 1, 'COMMA', 2, 'POINT')}"></div>
-                    <a th:href="@{/buscar}" class="btn btn-outline-primary btn-job">Ver detalle</a>
+        <!-- Resultados -->
+        <div th:if="${resultados != null and not #lists.isEmpty(resultados)}">
+            <h2 class="section-title">Resultados</h2>
+            <div class="row g-4">
+                <div th:each="puesto : ${resultados}" class="col-md-6">
+                    <div class="job-card">
+                        <div class="job-company" th:text="${puesto.empresa.nombre}"></div>
+                        <div class="job-title" th:text="${puesto.titulo}"></div>
+                        <div class="job-salary"
+                             th:text="${#numbers.formatDecimal(puesto.salario, 1, 'COMMA', 2, 'POINT')}"></div>
+                        <!-- Características requeridas -->
+                        <div th:if="${not #lists.isEmpty(puesto.puestoCaracteristicas)}"
+                             class="job-detail-box mb-2">
+                            <h6>Requisitos</h6>
+                            <ul>
+                                <li th:each="pc : ${puesto.puestoCaracteristicas}"
+                                    th:text="${pc.caracteristica.nombre} + ' — nivel ' + ${pc.nivelRequerido}"></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div th:if="${resultados != null and #lists.isEmpty(resultados)}" class="alert alert-info">
-            No se encontraron puestos con los filtros aplicados.
+        <div th:if="${resultados != null and #lists.isEmpty(resultados)}"
+             class="alert alert-info mt-3">
+            No se encontraron puestos con los criterios aplicados.
         </div>
     </section>
 </main>

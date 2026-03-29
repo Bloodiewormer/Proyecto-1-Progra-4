@@ -2,38 +2,28 @@ package org.bolsa.empleo.service.impl;
 
 import org.bolsa.empleo.dto.CaracteristicaNivelDto;
 import org.bolsa.empleo.dto.OferenteMatchDto;
-import org.bolsa.empleo.model.Oferente;
-import org.bolsa.empleo.model.OferenteCaracteristica;
-import org.bolsa.empleo.model.OferenteCaracteristicaId;
-import org.bolsa.empleo.model.PuestoCaracteristica;
-import org.bolsa.empleo.repository.CaracteristicaRepository;
-import org.bolsa.empleo.repository.OferenteCaracteristicaRepository;
-import org.bolsa.empleo.repository.OferenteRepository;
-import org.bolsa.empleo.repository.PuestoCaracteristicaRepository;
+import org.bolsa.empleo.model.*;
+import org.bolsa.empleo.repository.*;
 import org.bolsa.empleo.service.OferenteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class OferenteServiceImpl implements OferenteService {
+
     private final OferenteRepository oferenteRepository;
     private final CaracteristicaRepository caracteristicaRepository;
     private final OferenteCaracteristicaRepository oferenteCaracteristicaRepository;
     private final PuestoCaracteristicaRepository puestoCaracteristicaRepository;
 
-    public OferenteServiceImpl(
-            OferenteRepository oferenteRepository,
-            CaracteristicaRepository caracteristicaRepository,
-            OferenteCaracteristicaRepository oferenteCaracteristicaRepository,
-            PuestoCaracteristicaRepository puestoCaracteristicaRepository
-    ) {
+    public OferenteServiceImpl(OferenteRepository oferenteRepository,
+                               CaracteristicaRepository caracteristicaRepository,
+                               OferenteCaracteristicaRepository oferenteCaracteristicaRepository,
+                               PuestoCaracteristicaRepository puestoCaracteristicaRepository) {
         this.oferenteRepository = oferenteRepository;
         this.caracteristicaRepository = caracteristicaRepository;
         this.oferenteCaracteristicaRepository = oferenteCaracteristicaRepository;
@@ -52,15 +42,16 @@ public class OferenteServiceImpl implements OferenteService {
             if (habilidad.getIdCaracteristica() == null || habilidad.getNivel() == null) {
                 continue;
             }
-
             OferenteCaracteristica relacion = new OferenteCaracteristica();
             OferenteCaracteristicaId id = new OferenteCaracteristicaId();
             id.setIdOferente(idOferente);
             id.setIdCaracteristica(habilidad.getIdCaracteristica());
             relacion.setId(id);
             relacion.setOferente(oferente);
-            relacion.setCaracteristica(caracteristicaRepository.findById(habilidad.getIdCaracteristica())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Caracteristica no encontrada")));
+            relacion.setCaracteristica(caracteristicaRepository
+                    .findById(habilidad.getIdCaracteristica())
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Característica no encontrada")));
             relacion.setNivel(habilidad.getNivel());
             oferenteCaracteristicaRepository.save(relacion);
         }
@@ -84,33 +75,37 @@ public class OferenteServiceImpl implements OferenteService {
         }
 
         List<OferenteMatchDto> resultados = new ArrayList<>();
-        List<Oferente> oferentes = oferenteRepository.findAll();
 
-        for (Oferente oferente : oferentes) {
+        for (Oferente oferente : oferenteRepository.findAll()) {
             Map<Integer, Integer> nivelesPorCaracteristica = new HashMap<>();
             oferenteCaracteristicaRepository.findByOferente_Id(oferente.getId())
-                    .forEach(item -> nivelesPorCaracteristica.put(item.getCaracteristica().getId(), item.getNivel()));
+                    .forEach(oc -> nivelesPorCaracteristica.put(oc.getCaracteristica().getId(), oc.getNivel()));
 
             int score = 0;
-            for (PuestoCaracteristica requerida : requeridas) {
-                Integer nivelOferente = nivelesPorCaracteristica.get(requerida.getCaracteristica().getId());
-                if (nivelOferente != null && nivelOferente >= requerida.getNivelRequerido()) {
+            for (PuestoCaracteristica req : requeridas) {
+                Integer nivelOferente = nivelesPorCaracteristica.get(req.getCaracteristica().getId());
+                if (nivelOferente != null && nivelOferente >= req.getNivelRequerido()) {
                     score++;
                 }
             }
 
             if (score > 0) {
-                String nombreCompleto = oferente.getNombre() + " " + oferente.getApellido();
                 resultados.add(new OferenteMatchDto(
                         oferente.getId(),
-                        nombreCompleto.trim(),
+                        (oferente.getNombre() + " " + oferente.getApellido()).trim(),
                         score,
-                        requeridas.size()   // total de características requeridas por el puesto
-                ));
+                        requeridas.size()));
             }
         }
 
         resultados.sort((a, b) -> Integer.compare(b.getScoreCoincidencia(), a.getScoreCoincidencia()));
         return resultados;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Oferente obtenerPorId(Integer idOferente) {
+        return oferenteRepository.findById(idOferente)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Oferente no encontrado"));
     }
 }

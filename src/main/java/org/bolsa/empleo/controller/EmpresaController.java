@@ -8,8 +8,11 @@ import jakarta.validation.Valid;
 import org.bolsa.empleo.dto.OferenteMatchDto;
 import org.bolsa.empleo.dto.PuestoCreateDto;
 import org.bolsa.empleo.model.Empresa;
+import org.bolsa.empleo.model.Oferente;
+import org.bolsa.empleo.model.OferenteCaracteristica;
 import org.bolsa.empleo.model.Puesto;
 import org.bolsa.empleo.repository.EmpresaRepository;
+import org.bolsa.empleo.repository.OferenteCaracteristicaRepository;
 import org.bolsa.empleo.repository.UsuarioRepository;
 import org.bolsa.empleo.service.OferenteService;
 import org.bolsa.empleo.service.PuestoService;
@@ -31,23 +34,26 @@ public class EmpresaController {
 
     private final PuestoService puestoService;
     private final OferenteService oferenteService;
+    private final OferenteCaracteristicaRepository oferenteCaracteristicaRepository;
     private final EmpresaRepository empresaRepository;
     private final UsuarioRepository usuarioRepository;
     private final CaracteristicaRepository caracteristicaRepository;
 
     public EmpresaController(PuestoService puestoService,
                              OferenteService oferenteService,
+                             OferenteCaracteristicaRepository oferenteCaracteristicaRepository,
                              EmpresaRepository empresaRepository,
                              UsuarioRepository usuarioRepository,
                              CaracteristicaRepository caracteristicaRepository) {
         this.puestoService = puestoService;
         this.oferenteService = oferenteService;
+        this.oferenteCaracteristicaRepository = oferenteCaracteristicaRepository;
         this.empresaRepository = empresaRepository;
         this.usuarioRepository = usuarioRepository;
         this.caracteristicaRepository = caracteristicaRepository;
     }
 
-    // ── Dashboard con datos reales ──
+    // ── Dashboard ──
     @GetMapping("/empresa/dashboard")
     public String dashboard(@AuthenticationPrincipal UserDetails principal, Model model) {
         Integer idEmpresa = resolverIdEmpresa(principal);
@@ -62,12 +68,14 @@ public class EmpresaController {
         return "empresa/dashboard";
     }
 
+    // ── Mis puestos ──
     @GetMapping("/empresa/mis-puestos")
     public String misPuestos(@AuthenticationPrincipal UserDetails principal, Model model) {
         model.addAttribute("puestos", puestoService.listarPorEmpresa(resolverIdEmpresa(principal)));
         return "empresa/mis-puestos";
     }
 
+    // ── Nuevo puesto ──
     @GetMapping("/empresa/nuevo-puesto")
     public String crearPuesto(Model model) {
         if (!model.containsAttribute("puesto")) {
@@ -91,6 +99,7 @@ public class EmpresaController {
         return "redirect:/empresa/mis-puestos";
     }
 
+    // ── Buscar candidatos ──
     @GetMapping("/empresa/candidatos")
     public String candidatos(@RequestParam(required = false) Integer idPuesto,
                              @AuthenticationPrincipal UserDetails principal, Model model) {
@@ -110,12 +119,26 @@ public class EmpresaController {
         return "empresa/candidatos";
     }
 
+    // ── Detalle candidato con datos REALES ──
     @GetMapping("/empresa/detalle-candidato")
-    public String detalleCandidato() {
+    public String detalleCandidato(@RequestParam Integer idOferente, Model model) {
+        Oferente oferente = oferenteService.obtenerPorId(idOferente);
+        List<OferenteCaracteristica> habilidades =
+                oferenteCaracteristicaRepository.findByOferente_Id(idOferente);
+
+        model.addAttribute("oferente", oferente);
+        model.addAttribute("habilidades", habilidades);
         return "empresa/detalle-candidato";
     }
 
-    // ── API REST ──
+    // ── Desactivar puesto ──
+    @PostMapping("/empresa/puestos/{idPuesto}/desactivar")
+    public String desactivarPuestoDesdeVista(@PathVariable Integer idPuesto) {
+        puestoService.desactivar(idPuesto);
+        return "redirect:/empresa/mis-puestos";
+    }
+
+    // ── APIs REST ──
     @PostMapping("/api/empresa/puestos")
     @ResponseBody
     public ResponseEntity<Puesto> guardarPuesto(
@@ -137,15 +160,10 @@ public class EmpresaController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/empresa/puestos/{idPuesto}/desactivar")
-    public String desactivarPuestoDesdeVista(@PathVariable Integer idPuesto) {
-        puestoService.desactivar(idPuesto);
-        return "redirect:/empresa/mis-puestos";
-    }
-
-    // ── Helper ──
+    // ── Helper: resuelve id_empresa a partir del principal autenticado ──
     private Integer resolverIdEmpresa(UserDetails principal) {
-        Usuario usuario = usuarioRepository.findByCorreoIgnoreCaseOrIdentificacion(
+        Usuario usuario = usuarioRepository
+                .findByCorreoIgnoreCaseOrIdentificacion(
                         principal.getUsername(), principal.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.FORBIDDEN, "Usuario autenticado no encontrado"));
