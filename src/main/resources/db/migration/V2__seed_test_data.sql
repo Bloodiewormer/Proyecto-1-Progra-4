@@ -2,9 +2,9 @@
 -- Datos de prueba para login con Spring Security + BCryptPasswordEncoder.
 --
 -- Credenciales sugeridas:
---   1) EMPRESA  → correo: empresa.test@demo.com | clave: Clave123
---   2) OFERENTE → correo: oferente.test@demo.com | clave: Clave123
---   3) ADMIN    → identificacion: ADMIN-DEMO-001 | clave: Clave123
+--   1) EMPRESA  → correo: empresa.test@demo.com | identificacion: EMP-DEMO-001 | clave: Clave123
+--   2) OFERENTE → correo: oferente.test@demo.com | identificacion: OFE-DEMO-001 | clave: Clave123
+--   3) ADMIN    → correo: admin.test@demo.com   | identificacion: ADMIN-DEMO-001 | clave: Clave123
 --
 -- Los hashes BCrypt fueron generados con BCryptPasswordEncoder (cost factor 10).
 -- NOTA: Estos hashes son válidos pero deben reemplazarse en producción.
@@ -12,24 +12,24 @@
 -- =============================================================
 
 -- Empresa de prueba (estado: ACTIVO para poder loguear)
-INSERT INTO usuario (correo, identificacion, password_hash, password_salt, rol, estado)
-SELECT 'empresa.test@demo.com', NULL, '$2a$10$kMAv0jShG2R1TPn3SVMgB.cSJf1thpWz9wNjsGILIfYjlYD4TNDSO', 'EMPRESA', 'ACTIVO'
+INSERT INTO usuario (correo, identificacion, password_hash, rol, estado)
+SELECT 'empresa.test@demo.com', 'EMP-DEMO-001', '$2a$10$KqLBgvE/HUh.IL6d3rtCE.htwVMvCkyDZDnqItVUGvs0ibG0V6DAG', 'EMPRESA', 'ACTIVO'
 WHERE NOT EXISTS (
-    SELECT 1 FROM usuario WHERE correo = 'empresa.test@demo.com'
+    SELECT 1 FROM usuario WHERE correo = 'empresa.test@demo.com' OR identificacion = 'EMP-DEMO-001'
 );
 
 -- Oferente de prueba (estado: ACTIVO para poder loguear)
-INSERT INTO usuario (correo, identificacion, password_hash, password_salt, rol, estado)
-SELECT 'oferente.test@demo.com', NULL, '$2a$10$kMAv0jShG2R1TPn3SVMgB.cSJf1thpWz9wNjsGILIfYjlYD4TNDSO', 'OFERENTE', 'ACTIVO'
+INSERT INTO usuario (correo, identificacion, password_hash, rol, estado)
+SELECT 'oferente.test@demo.com', 'OFE-DEMO-001', '$2a$10$KqLBgvE/HUh.IL6d3rtCE.htwVMvCkyDZDnqItVUGvs0ibG0V6DAG', 'OFERENTE', 'ACTIVO'
 WHERE NOT EXISTS (
-    SELECT 1 FROM usuario WHERE correo = 'oferente.test@demo.com'
+    SELECT 1 FROM usuario WHERE correo = 'oferente.test@demo.com' OR identificacion = 'OFE-DEMO-001'
 );
 
 -- Admin de prueba (estado: ACTIVO por defecto para ADMIN)
-INSERT INTO usuario (correo, identificacion, password_hash, password_salt, rol, estado)
-SELECT NULL, 'ADMIN-DEMO-001', '$2a$10$kMAv0jShG2R1TPn3SVMgB.cSJf1thpWz9wNjsGILIfYjlYD4TNDSO', 'ADMIN', 'ACTIVO'
+INSERT INTO usuario (correo, identificacion, password_hash, rol, estado)
+SELECT 'admin.test@demo.com', 'ADMIN-DEMO-001', '$2a$10$KqLBgvE/HUh.IL6d3rtCE.htwVMvCkyDZDnqItVUGvs0ibG0V6DAG', 'ADMIN', 'ACTIVO'
 WHERE NOT EXISTS (
-    SELECT 1 FROM usuario WHERE identificacion = 'ADMIN-DEMO-001'
+    SELECT 1 FROM usuario WHERE correo = 'admin.test@demo.com' OR identificacion = 'ADMIN-DEMO-001'
 );
 
 -- Empresa vinculada al usuario empresa.test@demo.com

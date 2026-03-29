@@ -7,8 +7,9 @@ CREATE TABLE `usuario` (
                            `estado` varchar(255) NOT NULL DEFAULT 'PENDIENTE' COMMENT 'ENUM: PENDIENTE | ACTIVO | INACTIVO — ADMIN se inserta como ACTIVO',
                            `fecha_creacion` datetime DEFAULT (CURRENT_TIMESTAMP),
                            CONSTRAINT chk_usuario_credenciales CHECK (
-                               (rol = 'ADMIN' AND identificacion IS NOT NULL AND correo IS NULL) OR
-                               (rol IN ('EMPRESA', 'OFERENTE') AND correo IS NOT NULL AND identificacion IS NULL)
+                               rol IN ('ADMIN', 'EMPRESA', 'OFERENTE')
+                               AND correo IS NOT NULL
+                               AND identificacion IS NOT NULL
                            )
 );
 
