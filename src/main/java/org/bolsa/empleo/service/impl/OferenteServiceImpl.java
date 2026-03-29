@@ -36,7 +36,10 @@ public class OferenteServiceImpl implements OferenteService {
         Oferente oferente = oferenteRepository.findById(idOferente)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Oferente no encontrado"));
 
+        // Delete existing skills first, then re-insert
         oferenteCaracteristicaRepository.deleteByOferente_Id(idOferente);
+        // Flush to avoid constraint violations before the re-insert
+        oferenteCaracteristicaRepository.flush();
 
         for (CaracteristicaNivelDto habilidad : habilidades) {
             if (habilidad.getIdCaracteristica() == null || habilidad.getNivel() == null) {
@@ -76,10 +79,13 @@ public class OferenteServiceImpl implements OferenteService {
 
         List<OferenteMatchDto> resultados = new ArrayList<>();
 
-        for (Oferente oferente : oferenteRepository.findAll()) {
+        List<Oferente> candidatos = oferenteRepository.findByUsuarioEstado("ACTIVO");
+
+        for (Oferente oferente : candidatos) {
             Map<Integer, Integer> nivelesPorCaracteristica = new HashMap<>();
             oferenteCaracteristicaRepository.findByOferente_Id(oferente.getId())
-                    .forEach(oc -> nivelesPorCaracteristica.put(oc.getCaracteristica().getId(), oc.getNivel()));
+                    .forEach(oc -> nivelesPorCaracteristica.put(
+                            oc.getCaracteristica().getId(), oc.getNivel()));
 
             int score = 0;
             for (PuestoCaracteristica req : requeridas) {
@@ -105,7 +111,7 @@ public class OferenteServiceImpl implements OferenteService {
     @Override
     @Transactional(readOnly = true)
     public Oferente obtenerPorId(Integer idOferente) {
-        return oferenteRepository.findById(idOferente)
+        return oferenteRepository.findDetalleById(idOferente)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Oferente no encontrado"));
     }
 }

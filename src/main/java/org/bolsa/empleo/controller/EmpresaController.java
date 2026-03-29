@@ -26,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.server.ResponseStatusException;
 
 @Controller
@@ -75,7 +76,7 @@ public class EmpresaController {
         return "empresa/mis-puestos";
     }
 
-    // ── Nuevo puesto ──
+    // ── Nuevo puesto (GET) ──
     @GetMapping("/empresa/nuevo-puesto")
     public String crearPuesto(Model model) {
         if (!model.containsAttribute("puesto")) {
@@ -89,12 +90,20 @@ public class EmpresaController {
         return "empresa/nuevo-puesto";
     }
 
+    // ── Nuevo puesto (POST) ──
+    // FIX: on validation error the template needs ${caracteristicas} — without it
+    //      Thymeleaf throws a NullPointerException when rendering the characteristics table.
     @PostMapping("/empresa/nuevo-puesto")
     public String guardarPuestoDesdeVista(
             @Valid @ModelAttribute("puesto") PuestoCreateDto dto,
             BindingResult bindingResult,
-            @AuthenticationPrincipal UserDetails principal) {
-        if (bindingResult.hasErrors()) return "empresa/nuevo-puesto";
+            @AuthenticationPrincipal UserDetails principal,
+            Model model) {
+        if (bindingResult.hasErrors()) {
+            // Re-populate the characteristics dropdown so the template can render
+            model.addAttribute("caracteristicas", caracteristicaRepository.findAll());
+            return "empresa/nuevo-puesto";
+        }
         puestoService.crear(dto, resolverIdEmpresa(principal));
         return "redirect:/empresa/mis-puestos";
     }
@@ -119,15 +128,29 @@ public class EmpresaController {
         return "empresa/candidatos";
     }
 
-    // ── Detalle candidato con datos REALES ──
+    // ── Detalle candidato ──
     @GetMapping("/empresa/detalle-candidato")
-    public String detalleCandidato(@RequestParam Integer idOferente, Model model) {
-        Oferente oferente = oferenteService.obtenerPorId(idOferente);
+    public String detalleCandidato(@RequestParam Integer idOferente,
+                                   @RequestParam(required = false) Integer idPuesto,
+                                   Model model,
+                                   RedirectAttributes redirectAttributes) {
+        Oferente oferente;
+        try {
+            oferente = oferenteService.obtenerPorId(idOferente);
+        } catch (ResponseStatusException ex) {
+            redirectAttributes.addFlashAttribute("error", "No se encontro el candidato solicitado.");
+            if (idPuesto != null) {
+                return "redirect:/empresa/candidatos?idPuesto=" + idPuesto;
+            }
+            return "redirect:/empresa/candidatos";
+        }
+
         List<OferenteCaracteristica> habilidades =
-                oferenteCaracteristicaRepository.findByOferente_Id(idOferente);
+                oferenteCaracteristicaRepository.findDetalleByOferenteId(idOferente);
 
         model.addAttribute("oferente", oferente);
         model.addAttribute("habilidades", habilidades);
+        model.addAttribute("idPuesto", idPuesto);
         return "empresa/detalle-candidato";
     }
 
