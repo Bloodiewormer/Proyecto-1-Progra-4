@@ -49,7 +49,7 @@ CREATE TABLE `puesto` (
 CREATE TABLE `caracteristica` (
                                   `id_caracteristica` int PRIMARY KEY AUTO_INCREMENT,
                                   `nombre` varchar(255) NOT NULL,
-                                  `id_padre` int COMMENT 'NULL = raiz de jerarquia. CK: id_padre != id_caracteristica'
+                                  `id_padre` int COMMENT 'NULL = raiz de jerarquia'
 );
 
 CREATE TABLE `oferente_caracteristica` (
@@ -76,6 +76,8 @@ ALTER TABLE `oferente` ADD FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_
 ALTER TABLE `puesto` ADD FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`) ON DELETE RESTRICT;
 
 ALTER TABLE `caracteristica` ADD FOREIGN KEY (`id_padre`) REFERENCES `caracteristica` (`id_caracteristica`) ON DELETE RESTRICT;
+
+CREATE INDEX idx_caracteristica_nombre_padre ON `caracteristica` (`nombre`, `id_padre`);
 
 ALTER TABLE `oferente_caracteristica` ADD FOREIGN KEY (`id_oferente`) REFERENCES `oferente` (`id_oferente`) ON DELETE CASCADE;
 

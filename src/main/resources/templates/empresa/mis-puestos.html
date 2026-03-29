@@ -54,14 +54,18 @@
                     </td>
                     <td>
                         <a th:href="@{/empresa/candidatos(idPuesto=${puesto.id})}"
-                           class="btn btn-sm btn-outline-primary">Ver candidatos</a>
-                        <form th:action="@{/empresa/puestos/{idPuesto}/desactivar(idPuesto=${puesto.id})}"
+                           class="btn btn-sm btn-outline-primary me-1">Ver candidatos</a>
+
+                        <!-- FIX: removed onclick="return confirm(...)" — JavaScript is NOT allowed
+                             per project spec. The form submits directly on click. -->
+                        <form th:if="${puesto.estado == 'ACTIVO'}"
+                              th:action="@{/empresa/puestos/{id}/desactivar(id=${puesto.id})}"
                               method="post" style="display: inline;">
-                            <button type="submit" class="btn btn-sm btn-outline-danger"
-                                    onclick="return confirm('¿Desactivar este puesto?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
                                 Desactivar
                             </button>
                         </form>
+                        <span th:if="${puesto.estado != 'ACTIVO'}" class="text-muted small">Inactivo</span>
                     </td>
                 </tr>
                 </tbody>

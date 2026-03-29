@@ -12,6 +12,8 @@
         <h1 class="page-title">Candidatos</h1>
         <p class="page-subtitle">Revise candidatos por puesto</p>
 
+        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+
         <!-- Lista de puestos para seleccionar -->
         <div th:if="${puestoSeleccionado == null}">
             <p class="page-subtitle">Seleccione un puesto para ver candidatos</p>
@@ -77,7 +79,7 @@
                             </span>
                         </td>
                         <td>
-                            <a th:href="@{/empresa/detalle-candidato(idOferente=${candidato.idOferente})}"
+                            <a th:href="@{/empresa/detalle-candidato(idOferente=${candidato.idOferente}, idPuesto=${puestoSeleccionado.id})}"
                                class="btn btn-sm btn-outline-primary">Ver detalle</a>
                         </td>
                     </tr>
