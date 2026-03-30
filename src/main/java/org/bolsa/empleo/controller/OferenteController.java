@@ -126,12 +126,25 @@ public class OferenteController {
                           @RequestParam("cv") MultipartFile archivo) {
         Integer idOferente = resolverIdOferente(principal);
         if (archivo.isEmpty()) return "redirect:/oferente/subir-cv";
+
         try {
             Path uploadDir = Paths.get("src/main/resources/static/uploads/cv");
             if (!Files.exists(uploadDir)) Files.createDirectories(uploadDir);
-            String filename = idOferente + "_" + System.currentTimeMillis() + "_" + archivo.getOriginalFilename();
+
+
+            String original = archivo.getOriginalFilename() != null ? archivo.getOriginalFilename() : "cv.pdf";
+            String cleanName = original.replaceAll("[^a-zA-Z0-9._-]", "_");
+            if (!cleanName.toLowerCase().endsWith(".pdf")) {
+                cleanName += ".pdf";
+            }
+
+            String filename = idOferente + "_" + System.currentTimeMillis() + "_" + cleanName;
+
             Files.copy(archivo.getInputStream(), uploadDir.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
-            oferenteService.guardarCV(idOferente, "/uploads/cv/" + filename);
+
+            String cvPath = "/uploads/cv/" + filename;
+            oferenteService.guardarCV(idOferente, cvPath);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
