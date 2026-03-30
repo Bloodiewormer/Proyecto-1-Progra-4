@@ -1,4 +1,4 @@
-
+--Password to all users "123"
 INSERT INTO usuario (correo, identificacion, password_hash, rol, estado)
 SELECT 'empresa.test@demo.com', 'EMP-DEMO-001', '$2a$10$KqLBgvE/HUh.IL6d3rtCE.htwVMvCkyDZDnqItVUGvs0ibG0V6DAG', 'EMPRESA', 'ACTIVO'
 WHERE NOT EXISTS (
