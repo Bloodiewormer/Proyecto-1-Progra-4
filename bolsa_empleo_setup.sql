@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `caracteristica` (
         ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE INDEX IF NOT EXISTS idx_caracteristica_nombre_padre
+CREATE INDEX idx_caracteristica_nombre_padre
     ON `caracteristica` (`nombre`, `id_padre`);
 
 
