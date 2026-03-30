@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Características')}"></head>
+<body>
+
+<header>
+    <nav th:replace="~{fragments/layout :: navbar-admin}"></nav>
+</header>
+
+<main class="main-content">
+    <section class="container page-section">
+        <h1 class="page-title">Características</h1>
+        <p class="page-subtitle">Gestione habilidades y criterios del sistema (jerárquicas)</p>
+
+        <div class="panel-card mb-4">
+            <form class="row g-3" th:action="@{/admin/caracteristicas}" method="post">
+                <div class="col-md-5">
+                    <label class="form-label">Nombre de la característica</label>
+                    <input type="text" class="form-control" name="nombre" required>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">Padre (opcional - para jerarquía)</label>
+                    <select class="form-select" name="idPadre">
+                        <option value="">-- Sin padre (nivel raíz) --</option>
+                        <option th:each="cat : ${todasCaracteristicas}"
+                                th:value="${cat.id}"
+                                th:text="${cat.nombre}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Agregar</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-card">
+            <table class="table table-bordered align-middle">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Padre</th>
+                    <th>Nivel</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(todasCaracteristicas)}">
+                    <td colspan="3" class="text-center text-muted">No hay características registradas aún.</td>
+                </tr>
+                <tr th:each="cat : ${todasCaracteristicas}">
+                    <td th:text="${cat.nombre}"></td>
+                    <td th:text="${cat.padre != null ? cat.padre.nombre : 'Raíz'}"></td>
+                    <td>
+                        <span class="badge" th:classappend="${cat.padre == null} ? 'bg-primary' : 'bg-secondary'">
+                            <span th:text="${cat.padre == null} ? 'Nivel 1' : 'Subcategoría'"></span>
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer('Módulo Administración', 'admin@bolsaempleo.local')}"></footer>
+
+</body>
+</html>

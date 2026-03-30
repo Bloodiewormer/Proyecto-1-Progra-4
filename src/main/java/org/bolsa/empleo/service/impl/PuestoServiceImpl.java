@@ -33,7 +33,7 @@ public class PuestoServiceImpl implements PuestoService {
         this.caracteristicaRepository = caracteristicaRepository;
     }
 
-    // Solo puestos PUBLICOS y ACTIVOS para la página de inicio
+
     @Override
     public List<Puesto> listarRecientes() {
         return puestoRepository.findRecientesPublicos(PageRequest.of(0, 5));
@@ -44,7 +44,7 @@ public class PuestoServiceImpl implements PuestoService {
         return puestoRepository.findByEmpresa_IdOrderByFechaPublicacionDesc(idEmpresa);
     }
 
-    // Búsqueda pública: solo PUBLICOS. Si hay características seleccionadas las prioriza.
+
     @Override
     public List<Puesto> buscarPorFiltros(PuestoFiltroDto dto) {
         List<Integer> ids = dto.getIdsCaracteristicas();

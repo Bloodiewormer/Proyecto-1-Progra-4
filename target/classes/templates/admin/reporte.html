@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Reporte')}"></head>
+<body>
+
+<header>
+    <nav th:replace="~{fragments/layout :: navbar-admin}"></nav>
+</header>
+
+<main class="main-content">
+    <section class="container page-section">
+
+        <div class="d-flex justify-content-between align-items-start mb-4">
+            <div>
+                <h1 class="page-title">Reporte general</h1>
+                <p class="page-subtitle">Resumen de datos del sistema</p>
+            </div>
+            <!-- Botón de descarga PDF -->
+            <a th:href="@{/admin/reporte/pdf}" class="btn btn-danger">
+                Descargar reporte PDF
+            </a>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalEmpresas}">0</div>
+                    <div class="stats-label">Empresas registradas</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalOferentes}">0</div>
+                    <div class="stats-label">Oferentes registrados</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${puestosActivos}">0</div>
+                    <div class="stats-label">Puestos activos</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${puestosInactivos}">0</div>
+                    <div class="stats-label">Puestos cerrados</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <h5 class="panel-title mb-3">Listado de puestos</h5>
+            <table class="table table-bordered align-middle">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Empresa</th>
+                    <th>Puesto</th>
+                    <th>Salario</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Fecha publicación</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(puestos)}">
+                    <td colspan="7" class="text-center text-muted">No hay puestos registrados.</td>
+                </tr>
+                <tr th:each="puesto, stat : ${puestos}">
+                    <td th:text="${stat.count}"></td>
+                    <td th:text="${puesto.empresa.nombre}"></td>
+                    <td th:text="${puesto.titulo}"></td>
+                    <td th:text="${#numbers.formatDecimal(puesto.salario, 1, 'COMMA', 2, 'POINT')}"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${puesto.tipoPublicacion == 'PUBLICO'} ? 'bg-success' : 'bg-secondary'"
+                              th:text="${puesto.tipoPublicacion}"></span>
+                    </td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${puesto.estado == 'ACTIVO'} ? 'bg-success' : 'bg-danger'"
+                              th:text="${puesto.estado}"></span>
+                    </td>
+                    <td th:text="${#temporals.format(puesto.fechaPublicacion, 'dd/MM/yyyy')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer('Módulo Administración', 'admin@bolsaempleo.local')}"></footer>
+
+</body>
+</html>

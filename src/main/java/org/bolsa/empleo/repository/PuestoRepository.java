@@ -11,10 +11,10 @@ import java.util.List;
 
 public interface PuestoRepository extends JpaRepository<Puesto, Integer> {
 
-    // --- Usada internamente por empresa (no filtra por tipo) ---
+
     List<Puesto> findByEmpresa_IdOrderByFechaPublicacionDesc(Integer idEmpresa);
 
-    // --- Página de inicio: solo públicos activos (últimos 5) ---
+
     @Query("""
             SELECT p FROM Puesto p
             WHERE p.estado = 'ACTIVO'
@@ -23,7 +23,7 @@ public interface PuestoRepository extends JpaRepository<Puesto, Integer> {
             """)
     List<Puesto> findRecientesPublicos(Pageable pageable);
 
-    // --- Búsqueda pública por palabra clave / salario (sin características) ---
+
     @Query("""
             SELECT p FROM Puesto p
             WHERE p.estado = 'ACTIVO'
@@ -40,7 +40,7 @@ public interface PuestoRepository extends JpaRepository<Puesto, Integer> {
             @Param("salarioMin") BigDecimal salarioMin,
             @Param("salarioMax") BigDecimal salarioMax);
 
-    // --- Búsqueda pública por características (+ filtros opcionales) ---
+
     @Query("""
             SELECT DISTINCT p FROM Puesto p
             JOIN p.puestoCaracteristicas pc
@@ -60,6 +60,5 @@ public interface PuestoRepository extends JpaRepository<Puesto, Integer> {
             @Param("salarioMin") BigDecimal salarioMin,
             @Param("salarioMax") BigDecimal salarioMax);
 
-    // --- Reporte admin: todos los puestos ---
     List<Puesto> findAllByOrderByFechaPublicacionDesc();
 }

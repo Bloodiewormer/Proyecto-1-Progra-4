@@ -10,7 +10,7 @@ public class PuestoFiltroDto {
     private BigDecimal salarioMin;
     private BigDecimal salarioMax;
 
-    // IDs de características seleccionadas en la búsqueda pública
+
     private List<Integer> idsCaracteristicas = new ArrayList<>();
 
     public String getPalabraClave() { return palabraClave; }

@@ -54,7 +54,7 @@ public class EmpresaController {
         this.caracteristicaRepository = caracteristicaRepository;
     }
 
-    // ── Dashboard ──
+
     @GetMapping("/empresa/dashboard")
     public String dashboard(@AuthenticationPrincipal UserDetails principal, Model model) {
         Integer idEmpresa = resolverIdEmpresa(principal);
@@ -69,14 +69,14 @@ public class EmpresaController {
         return "empresa/dashboard";
     }
 
-    // ── Mis puestos ──
+
     @GetMapping("/empresa/mis-puestos")
     public String misPuestos(@AuthenticationPrincipal UserDetails principal, Model model) {
         model.addAttribute("puestos", puestoService.listarPorEmpresa(resolverIdEmpresa(principal)));
         return "empresa/mis-puestos";
     }
 
-    // ── Nuevo puesto (GET) ──
+
     @GetMapping("/empresa/nuevo-puesto")
     public String crearPuesto(Model model) {
         if (!model.containsAttribute("puesto")) {
@@ -90,9 +90,7 @@ public class EmpresaController {
         return "empresa/nuevo-puesto";
     }
 
-    // ── Nuevo puesto (POST) ──
-    // FIX: on validation error the template needs ${caracteristicas} — without it
-    //      Thymeleaf throws a NullPointerException when rendering the characteristics table.
+
     @PostMapping("/empresa/nuevo-puesto")
     public String guardarPuestoDesdeVista(
             @Valid @ModelAttribute("puesto") PuestoCreateDto dto,
@@ -100,7 +98,7 @@ public class EmpresaController {
             @AuthenticationPrincipal UserDetails principal,
             Model model) {
         if (bindingResult.hasErrors()) {
-            // Re-populate the characteristics dropdown so the template can render
+
             model.addAttribute("caracteristicas", caracteristicaRepository.findAll());
             return "empresa/nuevo-puesto";
         }
@@ -108,7 +106,7 @@ public class EmpresaController {
         return "redirect:/empresa/mis-puestos";
     }
 
-    // ── Buscar candidatos ──
+
     @GetMapping("/empresa/candidatos")
     public String candidatos(@RequestParam(required = false) Integer idPuesto,
                              @AuthenticationPrincipal UserDetails principal, Model model) {
@@ -128,7 +126,7 @@ public class EmpresaController {
         return "empresa/candidatos";
     }
 
-    // ── Detalle candidato ──
+
     @GetMapping("/empresa/detalle-candidato")
     public String detalleCandidato(@RequestParam Integer idOferente,
                                    @RequestParam(required = false) Integer idPuesto,
@@ -154,14 +152,14 @@ public class EmpresaController {
         return "empresa/detalle-candidato";
     }
 
-    // ── Desactivar puesto ──
+
     @PostMapping("/empresa/puestos/{idPuesto}/desactivar")
     public String desactivarPuestoDesdeVista(@PathVariable Integer idPuesto) {
         puestoService.desactivar(idPuesto);
         return "redirect:/empresa/mis-puestos";
     }
 
-    // ── APIs REST ──
+
     @PostMapping("/api/empresa/puestos")
     @ResponseBody
     public ResponseEntity<Puesto> guardarPuesto(
@@ -183,7 +181,7 @@ public class EmpresaController {
         return ResponseEntity.noContent().build();
     }
 
-    // ── Helper: resuelve id_empresa a partir del principal autenticado ──
+
     private Integer resolverIdEmpresa(UserDetails principal) {
         Usuario usuario = usuarioRepository
                 .findByCorreoIgnoreCaseOrIdentificacion(

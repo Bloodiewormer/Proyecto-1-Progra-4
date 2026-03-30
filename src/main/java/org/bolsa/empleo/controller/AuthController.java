@@ -22,16 +22,6 @@ public class AuthController {
         this.authService = authService;
     }
 
-    // ─────────────────────────────────────────────
-    // Login
-    // ─────────────────────────────────────────────
-
-    /**
-     * Muestra la página de login.
-     * Spring Security pasa automáticamente:
-     *  - ?error=true  cuando las credenciales son incorrectas
-     *  - ?logout=true cuando el usuario cerró sesión
-     */
     @GetMapping("/login")
     public String mostrarLogin(@RequestParam(required = false) String error,
                                @RequestParam(required = false) String logout,
@@ -41,9 +31,7 @@ public class AuthController {
         return "auth/login";
     }
 
-    // ─────────────────────────────────────────────
-    // Registro empresa
-    // ─────────────────────────────────────────────
+
     @GetMapping("/registro/empresa")
     public String registroEmpresa(Model model) {
         if (!model.containsAttribute("empresaDto")) {
@@ -69,9 +57,6 @@ public class AuthController {
         return "auth/registro-empresa";
     }
 
-    // ─────────────────────────────────────────────
-    // Registro oferente
-    // ─────────────────────────────────────────────
     @GetMapping("/registro/oferente")
     public String registroOferente(Model model) {
         if (!model.containsAttribute("oferenteDto")) {

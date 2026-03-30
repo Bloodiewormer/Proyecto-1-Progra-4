@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Mis Habilidades')}"></head>
+<body>
+
+<header>
+    <nav th:replace="~{fragments/layout :: navbar-oferente}"></nav>
+</header>
+
+<main class="main-content">
+    <section class="container page-section">
+        <h1 class="page-title">Mis habilidades</h1>
+        <p class="page-subtitle">Agregue y administre sus conocimientos (máximo 5)</p>
+
+        <form th:action="@{/oferente/habilidades}" method="post">
+            <div class="panel-card mb-4">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Característica</th>
+                        <th>Nivel (1-5)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="hab, stat : ${habilidades}">
+                        <td>
+                            <select class="form-select" name="idCaracteristica">
+                                <option value="">-- Seleccione --</option>
+                                <option th:each="car : ${caracteristicas}"
+                                        th:value="${car.id}"
+                                        th:text="${car.nombre}"
+                                        th:selected="${hab.idCaracteristica != null and hab.idCaracteristica == car.id}">
+                                </option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" name="nivel"
+                                   min="1" max="5" th:value="${hab.nivel}">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Guardar habilidades</button>
+                <a th:href="@{/oferente/dashboard}" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer('Módulo Oferente', 'oferente@bolsaempleo.local')}"></footer>
+
+</body>
+</html>

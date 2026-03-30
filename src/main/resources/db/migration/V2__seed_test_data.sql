@@ -1,17 +1,4 @@
--- V2__seed_test_data.sql
--- Datos de prueba para login con Spring Security + BCryptPasswordEncoder.
--- Incluye caracteristicas jerarquicas, puestos demo y habilidades de oferente.
---
--- Credenciales sugeridas:
---   1) EMPRESA  -> correo: empresa.test@demo.com | identificacion: EMP-DEMO-001 | clave: Clave123
---   2) OFERENTE -> correo: oferente.test@demo.com | identificacion: OFE-DEMO-001 | clave: Clave123
---   3) ADMIN    -> correo: admin.test@demo.com   | identificacion: ADMIN-DEMO-001 | clave: Clave123
---
--- Los hashes BCrypt fueron generados con BCryptPasswordEncoder (cost factor 10).
--- NOTA: Estos hashes son validos pero deben reemplazarse en produccion.
--- =============================================================
 
--- 1) Usuarios base de prueba
 INSERT INTO usuario (correo, identificacion, password_hash, rol, estado)
 SELECT 'empresa.test@demo.com', 'EMP-DEMO-001', '$2a$10$KqLBgvE/HUh.IL6d3rtCE.htwVMvCkyDZDnqItVUGvs0ibG0V6DAG', 'EMPRESA', 'ACTIVO'
 WHERE NOT EXISTS (
@@ -30,7 +17,6 @@ WHERE NOT EXISTS (
     SELECT 1 FROM usuario WHERE correo = 'admin.test@demo.com' OR identificacion = 'ADMIN-DEMO-001'
 );
 
--- 2) Empresa y oferente demo
 INSERT INTO empresa (id_usuario, nombre, localizacion, telefono, descripcion)
 SELECT u.id_usuario, 'Empresa Demo', 'San Jose, CR', '2222-3333', 'Empresa de prueba para validar login y flujo base.'
 FROM usuario u
@@ -47,7 +33,6 @@ WHERE u.correo = 'oferente.test@demo.com'
       SELECT 1 FROM oferente o WHERE o.id_usuario = u.id_usuario
   );
 
--- 3) Caracteristicas raiz
 INSERT INTO caracteristica (nombre, id_padre)
 SELECT 'Lenguajes de programación', NULL
 WHERE NOT EXISTS (
@@ -83,7 +68,6 @@ SET @bd = (SELECT id_caracteristica FROM caracteristica WHERE nombre = 'Bases de
 SET @tw = (SELECT id_caracteristica FROM caracteristica WHERE nombre = 'Tecnologías Web' AND id_padre IS NULL LIMIT 1);
 SET @testing = (SELECT id_caracteristica FROM caracteristica WHERE nombre = 'Testing' AND id_padre IS NULL LIMIT 1);
 
--- 4) Sub-caracteristicas
 INSERT INTO caracteristica (nombre, id_padre)
 SELECT 'Java', @lng FROM DUAL
 WHERE @lng IS NOT NULL
@@ -185,7 +169,6 @@ SET @junit = (
     LIMIT 1
 );
 
--- 5) Puestos de prueba (empresa demo)
 INSERT INTO puesto (id_empresa, titulo, descripcion, salario, tipo_publicacion, estado)
 SELECT e.id_empresa,
        'Full Stack Developer',
@@ -366,7 +349,6 @@ WHERE @p5 IS NOT NULL AND @mysql IS NOT NULL
       SELECT 1 FROM puesto_caracteristica WHERE id_puesto = @p5 AND id_caracteristica = @mysql
   );
 
--- 6) Habilidades del oferente demo (Ana Prueba)
 SET @oferente_demo = (
     SELECT o.id_oferente
     FROM oferente o

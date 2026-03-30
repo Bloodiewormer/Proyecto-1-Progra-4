@@ -88,11 +88,7 @@ main,
     margin-bottom: 1.5rem;
 }
 
-/* ── Job cards ─────────────────────────────────────────────────────────────
-   FIX: The spec says "al posicionar el mouse, ver el detalle".
-   The job-detail-box is hidden by default and revealed with a pure-CSS
-   :hover on the parent .job-card — no JavaScript needed.
-   ──────────────────────────────────────────────────────────────────────── */
+
 .job-card {
     background-color: #eef9ee;
     border: 1px solid #d6ecd6;
@@ -100,7 +96,7 @@ main,
     padding: 1rem;
     height: 100%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-    position: relative;        /* needed so the overlay detail-box positions correctly */
+    position: relative;
 }
 
 .job-company {
@@ -128,7 +124,6 @@ main,
     border-radius: 6px;
 }
 
-/* Hidden by default — shown on hover via CSS (no JS) */
 .job-detail-box {
     display: none;
     background-color: #ffffff;

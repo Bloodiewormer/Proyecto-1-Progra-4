@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="45fb62c0-87b6-40f2-970d-b9b1bec50dee" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/config/CustomUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/config/CustomUserDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/controller/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/controller/EmpresaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/controller/EmpresaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/controller/OferenteController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/controller/OferenteController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/controller/PublicController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/controller/PublicController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/dto/OferenteMatchDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/dto/OferenteMatchDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/dto/PuestoCreateDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/dto/PuestoCreateDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/dto/PuestoFiltroDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/dto/PuestoFiltroDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/dto/RegistroEmpresaDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/dto/RegistroEmpresaDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/repository/PuestoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/repository/PuestoRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/service/impl/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/service/impl/AuthServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/service/impl/OferenteServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/service/impl/OferenteServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/service/impl/PuestoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/service/impl/PuestoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/util/GenerateBcryptHashes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bolsa/empleo/util/GenerateBcryptHashes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/V2__seed_test_data.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/db/migration/V2__seed_test_data.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/hibernate.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/hibernate.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/main.css" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="3B0Z7tdFnxlNB8cO8yjWiGnkeJz" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven.Empleo [org.flywaydb:flyway-maven-plugin:11.14.1:clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Empleo [org.flywaydb:flyway-maven-plugin:11.14.1:migrate].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.Proyecto1Progra4Application.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Christopher-Branch&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/Proyecto-1-Progra-4&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="Proyecto-1-Progra-4" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="Proyecto-1-Progra-4" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Proyecto1Progra4Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="Empleo" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.bolsa.empleo.Proyecto1Progra4Application" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.27812.49" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-IU-251.27812.49" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="45fb62c0-87b6-40f2-970d-b9b1bec50dee" name="Changes" comment="" />
+      <created>1773627785239</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1773627785239</updated>
+      <workItem from="1773627787078" duration="257000" />
+      <workItem from="1773852230075" duration="53000" />
+      <workItem from="1774036293508" duration="714000" />
+      <workItem from="1774706270467" duration="81000" />
+      <workItem from="1774826942198" duration="1460000" />
+      <workItem from="1774828437371" duration="1108000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

@@ -49,7 +49,7 @@ public class OferenteController {
         this.oferenteCaracteristicaRepository = oferenteCaracteristicaRepository;
     }
 
-    // ── Dashboard con datos reales ──
+
     @GetMapping("/oferente/dashboard")
     public String dashboard(@AuthenticationPrincipal UserDetails principal, Model model) {
         Integer idOferente = resolverIdOferente(principal);
@@ -69,7 +69,7 @@ public class OferenteController {
     public String gestionarHabilidades(@AuthenticationPrincipal UserDetails principal, Model model) {
         Integer idOferente = resolverIdOferente(principal);
 
-        // Cargar habilidades actuales del oferente
+
         List<CaracteristicaNivelDto> habilidadesActuales = oferenteCaracteristicaRepository
                 .findByOferente_Id(idOferente)
                 .stream()
@@ -80,7 +80,7 @@ public class OferenteController {
                     return dto;
                 }).collect(java.util.stream.Collectors.toList());
 
-        // Completar hasta 5 filas vacías
+
         while (habilidadesActuales.size() < 5) {
             habilidadesActuales.add(new CaracteristicaNivelDto());
         }
@@ -138,7 +138,7 @@ public class OferenteController {
         return "redirect:/oferente/subir-cv";
     }
 
-    // ── API REST ──
+
     @PostMapping("/api/oferente/habilidades")
     @ResponseBody
     public ResponseEntity<Void> guardarHabilidades(
@@ -156,7 +156,7 @@ public class OferenteController {
         return ResponseEntity.noContent().build();
     }
 
-    // ── Helper ──
+
     private Integer resolverIdOferente(UserDetails principal) {
         Usuario usuario = usuarioRepository.findByCorreoIgnoreCaseOrIdentificacion(
                         principal.getUsername(), principal.getUsername())

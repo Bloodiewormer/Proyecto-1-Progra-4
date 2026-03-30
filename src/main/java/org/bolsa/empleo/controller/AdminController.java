@@ -50,7 +50,6 @@ public class AdminController {
         this.oferenteRepository = oferenteRepository;
     }
 
-    // ── Dashboard ──
     @GetMapping("/admin/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("empresasPendientes",   usuarioService.listarEmpresasPendientes().size());
@@ -60,7 +59,6 @@ public class AdminController {
         return "admin/dashboard";
     }
 
-    // ── Empresas pendientes ──
     @GetMapping("/admin/empresas-pendientes")
     public String empresasPendientes(Model model) {
         List<Empresa> empresas = usuarioService.listarEmpresasPendientes().stream()
@@ -71,7 +69,7 @@ public class AdminController {
         return "admin/empresas-pendientes";
     }
 
-    // ── Oferentes pendientes ──
+
     @GetMapping("/admin/oferentes-pendientes")
     public String oferentesPendientes(Model model) {
         List<Oferente> oferentes = usuarioService.listarOferentesPendientes().stream()
@@ -82,7 +80,7 @@ public class AdminController {
         return "admin/oferentes-pendientes";
     }
 
-    // ── Aprobar usuario ──
+
     @PostMapping("/admin/usuarios/{idUsuario}/aprobar")
     public String aprobarUsuario(@PathVariable Integer idUsuario,
                                  @RequestParam(required = false) String origen) {
@@ -92,7 +90,7 @@ public class AdminController {
                 : "redirect:/admin/empresas-pendientes";
     }
 
-    // ── Características ──
+
     @GetMapping("/admin/caracteristicas")
     public String gestionarCaracteristicas(Model model) {
         model.addAttribute("todasCaracteristicas", caracteristicaRepository.findAll());
@@ -111,7 +109,7 @@ public class AdminController {
         return "redirect:/admin/caracteristicas";
     }
 
-    // ── Reporte HTML ──
+
     @GetMapping("/admin/reporte")
     public String generarReporte(Model model) {
         List<Puesto> puestos = puestoService.obtenerTodosLosPuestos();
@@ -124,13 +122,13 @@ public class AdminController {
         return "admin/reporte";
     }
 
-    // ── Reporte PDF (puestos agrupados por mes) ──
+
     @GetMapping("/admin/reporte/pdf")
     @ResponseBody
     public ResponseEntity<byte[]> generarReportePdf() {
         List<Puesto> puestos = puestoService.obtenerTodosLosPuestos();
 
-        // Agrupar por año-mes
+
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM");
         Map<String, List<Puesto>> porMes = puestos.stream()
                 .filter(p -> p.getFechaPublicacion() != null)
@@ -138,7 +136,7 @@ public class AdminController {
                                 p.getFechaPublicacion()
                                         .atZone(ZoneId.systemDefault())
                                         .format(fmt),
-                        TreeMap::new,        // mantiene orden cronológico
+                        TreeMap::new,
                         Collectors.toList()));
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -148,14 +146,14 @@ public class AdminController {
             PdfWriter.getInstance(doc, baos);
             doc.open();
 
-            // Fuentes
+
             Font fTitulo  = FontFactory.getFont(FontFactory.HELVETICA_BOLD,  16, Color.decode("#1f232a"));
             Font fSub     = FontFactory.getFont(FontFactory.HELVETICA,        9, Color.DARK_GRAY);
             Font fMes     = FontFactory.getFont(FontFactory.HELVETICA_BOLD,  12, Color.decode("#0d6efd"));
             Font fHeader  = FontFactory.getFont(FontFactory.HELVETICA_BOLD,   9, Color.WHITE);
             Font fCelda   = FontFactory.getFont(FontFactory.HELVETICA,        9, Color.BLACK);
 
-            // Encabezado del documento
+
             Paragraph titulo = new Paragraph("Bolsa de Empleo — Reporte de Puestos por Mes", fTitulo);
             titulo.setAlignment(Element.ALIGN_CENTER);
             doc.add(titulo);
@@ -168,7 +166,7 @@ public class AdminController {
             doc.add(fecha);
             doc.add(Chunk.NEWLINE);
 
-            // Resumen global
+
             PdfPTable resumen = new PdfPTable(4);
             resumen.setWidthPercentage(100);
             resumen.setSpacingAfter(14);
@@ -188,7 +186,7 @@ public class AdminController {
                 doc.add(new Paragraph("No hay puestos registrados.", fCelda));
             }
 
-            // Una tabla por mes
+
             for (Map.Entry<String, List<Puesto>> entry : porMes.entrySet()) {
                 Paragraph encabezadoMes = new Paragraph("Mes: " + entry.getKey() +
                         "  (" + entry.getValue().size() + " puesto(s))", fMes);
@@ -232,7 +230,7 @@ public class AdminController {
                 .body(baos.toByteArray());
     }
 
-    // ── Helpers para construir tablas PDF ──
+
     private void agregarCeldaEncabezado(PdfPTable tabla, String texto, Color fondo, Font fuente) {
         PdfPCell celda = new PdfPCell(new Phrase(texto, fuente));
         celda.setBackgroundColor(fondo);

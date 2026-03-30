@@ -22,7 +22,7 @@ public class PuestoCreateDto {
     private BigDecimal salario;
 
     @NotBlank(message = "El tipo de publicación es obligatorio (PUBLICO o PRIVADO)")
-    private String tipoPublicacion;   // "PUBLICO" o "PRIVADO" según enum TipoPublicacion
+    private String tipoPublicacion;
 
     @NotNull(message = "Debe seleccionar al menos una característica requerida")
     private List<CaracteristicaNivelDto> caracteristicasRequeridas;
