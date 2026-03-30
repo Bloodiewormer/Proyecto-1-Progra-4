@@ -26,9 +26,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Controller
 public class PublicController {
+
+    // Debe ser idéntico al UPLOAD_DIR de OferenteController.
+    // toAbsolutePath().normalize() garantiza que ambos controllers
+    // apunten al mismo directorio físico sin importar cuándo se resuelve.
+    private static final Path UPLOAD_DIR =
+            Paths.get("uploads", "cv").toAbsolutePath().normalize();
 
     private final PuestoService puestoService;
     private final CaracteristicaRepository caracteristicaRepository;
@@ -61,7 +68,11 @@ public class PublicController {
         return "public/buscar";
     }
 
-
+    /**
+     * Sirve archivos de CV de forma segura desde el directorio externo uploads/cv/.
+     * Solo usuarios autenticados (OFERENTE, EMPRESA, ADMIN) pueden acceder.
+     * URL guardada en BD: /cv/{filename}
+     */
     @GetMapping("/cv/{filename}")
     public ResponseEntity<Resource> verCV(@PathVariable String filename,
                                           @AuthenticationPrincipal UserDetails principal) {
@@ -77,17 +88,28 @@ public class PublicController {
         }
 
         try {
-            Path filePath = Paths.get("src/main/resources/static/uploads/cv/" + filename);
+            // normalize() previene path traversal (e.g. ../../etc/passwd)
+            Path filePath = UPLOAD_DIR.resolve(filename).normalize();
+
+            // Seguridad: verificar que el path resuelto sigue dentro de UPLOAD_DIR
+            if (!filePath.startsWith(UPLOAD_DIR)) {
+                throw new ResponseStatusException(FORBIDDEN, "Acceso denegado");
+            }
+
             Resource resource = new UrlResource(filePath.toUri());
 
             if (!resource.exists() || !resource.isReadable()) {
-                throw new ResponseStatusException(FORBIDDEN, "CV no encontrado");
+                throw new ResponseStatusException(NOT_FOUND, "CV no encontrado");
             }
 
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_PDF)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "inline; filename=\"" + filename + "\"")
                     .body(resource);
+
+        } catch (ResponseStatusException e) {
+            throw e;
         } catch (Exception e) {
             throw new ResponseStatusException(FORBIDDEN, "Error al acceder al CV");
         }

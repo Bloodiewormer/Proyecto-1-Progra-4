@@ -31,6 +31,14 @@ import org.springframework.web.server.ResponseStatusException;
 @PreAuthorize("hasRole('OFERENTE')")
 public class OferenteController {
 
+    // Ruta absoluta resuelta UNA SOLA VEZ al arrancar la JVM.
+    // Usar toAbsolutePath() evita que el path se resuelva distinto en cada request
+    // dependiendo del working directory del thread, lo que causaba errores intermitentes
+    // al intentar leer el CV recién subido.
+    // Resultado: <raiz-del-proyecto>/uploads/cv/
+    private static final Path UPLOAD_DIR =
+            Paths.get("uploads", "cv").toAbsolutePath().normalize();
+
     private final OferenteService oferenteService;
     private final OferenteRepository oferenteRepository;
     private final UsuarioRepository usuarioRepository;
@@ -69,7 +77,6 @@ public class OferenteController {
     public String gestionarHabilidades(@AuthenticationPrincipal UserDetails principal, Model model) {
         Integer idOferente = resolverIdOferente(principal);
 
-
         List<CaracteristicaNivelDto> habilidadesActuales = oferenteCaracteristicaRepository
                 .findByOferente_Id(idOferente)
                 .stream()
@@ -79,7 +86,6 @@ public class OferenteController {
                     dto.setNivel(oc.getNivel());
                     return dto;
                 }).collect(java.util.stream.Collectors.toList());
-
 
         while (habilidadesActuales.size() < 5) {
             habilidadesActuales.add(new CaracteristicaNivelDto());
@@ -128,22 +134,23 @@ public class OferenteController {
         if (archivo.isEmpty()) return "redirect:/oferente/subir-cv";
 
         try {
-            Path uploadDir = Paths.get("src/main/resources/static/uploads/cv");
-            if (!Files.exists(uploadDir)) Files.createDirectories(uploadDir);
-
-
-            String original = archivo.getOriginalFilename() != null ? archivo.getOriginalFilename() : "cv.pdf";
-            String cleanName = original.replaceAll("[^a-zA-Z0-9._-]", "_");
-            if (!cleanName.toLowerCase().endsWith(".pdf")) {
-                cleanName += ".pdf";
+            // Crear directorio si no existe (usa la ruta absoluta ya resuelta)
+            if (!Files.exists(UPLOAD_DIR)) {
+                Files.createDirectories(UPLOAD_DIR);
             }
 
-            String filename = idOferente + "_" + System.currentTimeMillis() + "_" + cleanName;
+            // Nombre único: idOferente_timestamp_nombreOriginal
+            String filename = idOferente + "_"
+                    + System.currentTimeMillis() + "_"
+                    + archivo.getOriginalFilename();
 
-            Files.copy(archivo.getInputStream(), uploadDir.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
+            // Copiar el archivo usando la ruta absoluta
+            Files.copy(archivo.getInputStream(),
+                    UPLOAD_DIR.resolve(filename),
+                    StandardCopyOption.REPLACE_EXISTING);
 
-            String cvPath = "/uploads/cv/" + filename;
-            oferenteService.guardarCV(idOferente, cvPath);
+            // Guardar en BD apuntando al endpoint seguro /cv/{filename}
+            oferenteService.guardarCV(idOferente, "/cv/" + filename);
 
         } catch (IOException e) {
             e.printStackTrace();
