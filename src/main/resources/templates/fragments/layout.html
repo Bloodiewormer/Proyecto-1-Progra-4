@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head(pageTitle)">
-    <!--
-    ═══════════════════════════════════════════════════════════════
-      src/main/resources/templates/fragments/layout.html
-      Fragmentos reutilizables del proyecto BolsaEmpleo
-    ═══════════════════════════════════════════════════════════════
-    -->
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle} + ' | BolsaEmpleo'">BolsaEmpleo</title>
@@ -15,15 +10,7 @@
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════
-     FRAGMENT: <head> común (CSS, meta, viewport)
-     Uso: th:replace="~{fragments/layout :: head('Título de la página')}"
-     ═══════════════════════════════════════════════════════ -->
 
-<!-- ═══════════════════════════════════════════════════════
-     FRAGMENT: Navbar pública (sin sesión)
-     Uso: th:replace="~{fragments/layout :: navbar-public}"
-     ═══════════════════════════════════════════════════════ -->
 <nav th:fragment="navbar-public" class="navbar topbar-custom">
     <div class="container d-flex justify-content-between align-items-center">
         <a class="navbar-brand d-flex align-items-center text-decoration-none" th:href="@{/}">
@@ -39,10 +26,7 @@
     </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════════════════
-     FRAGMENT: Navbar Admin
-     Uso: th:replace="~{fragments/layout :: navbar-admin}"
-     ═══════════════════════════════════════════════════════ -->
+
 <nav th:fragment="navbar-admin" class="navbar topbar-custom">
     <div class="container d-flex justify-content-between align-items-center">
         <a class="navbar-brand d-flex align-items-center text-decoration-none" th:href="@{/admin/dashboard}">
@@ -61,10 +45,7 @@
     </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════════════════
-     FRAGMENT: Navbar Empresa
-     Uso: th:replace="~{fragments/layout :: navbar-empresa}"
-     ═══════════════════════════════════════════════════════ -->
+
 <nav th:fragment="navbar-empresa" class="navbar topbar-custom">
     <div class="container d-flex justify-content-between align-items-center">
         <a class="navbar-brand d-flex align-items-center text-decoration-none" th:href="@{/empresa/dashboard}">
@@ -82,10 +63,7 @@
     </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════════════════
-     FRAGMENT: Navbar Oferente
-     Uso: th:replace="~{fragments/layout :: navbar-oferente}"
-     ═══════════════════════════════════════════════════════ -->
+
 <nav th:fragment="navbar-oferente" class="navbar topbar-custom">
     <div class="container d-flex justify-content-between align-items-center">
         <a class="navbar-brand d-flex align-items-center text-decoration-none" th:href="@{/oferente/dashboard}">
@@ -102,10 +80,7 @@
     </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════════════════
-     FRAGMENT: Footer genérico parametrizable
-     Uso: th:replace="~{fragments/layout :: footer('Módulo Admin', 'admin@bolsaempleo.local')}"
-     ═══════════════════════════════════════════════════════ -->
+
 <footer th:fragment="footer(modulo, contacto)" class="footer-custom">
     <div class="container d-flex justify-content-between">
         <div class="footer-left">

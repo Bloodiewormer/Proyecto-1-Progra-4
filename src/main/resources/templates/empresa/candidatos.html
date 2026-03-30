@@ -14,7 +14,7 @@
 
         <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
 
-        <!-- Lista de puestos para seleccionar -->
+
         <div th:if="${puestoSeleccionado == null}">
             <p class="page-subtitle">Seleccione un puesto para ver candidatos</p>
             <div class="table-card">
@@ -49,7 +49,7 @@
             </div>
         </div>
 
-        <!-- Candidatos del puesto seleccionado -->
+
         <div th:if="${puestoSeleccionado != null}">
             <p class="page-subtitle">
                 Candidatos para: <strong th:text="${puestoSeleccionado.titulo}"></strong>
