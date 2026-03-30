@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Inicio')}"></head>
+<body>
+
+<header>
+    <nav th:replace="~{fragments/layout :: navbar-public}"></nav>
+</header>
+
+<main class="main-content">
+    <section class="container page-section">
+        <h1 class="page-title">Bolsa de Empleo</h1>
+        <p class="page-subtitle">Últimos 5 puestos públicos</p>
+
+        <div class="row g-4">
+            <div th:each="puesto : ${puestosRecientes}" class="col-md-6 col-lg-4">
+                <div class="job-card">
+                    <div class="job-company" th:text="${puesto.empresa.nombre}"></div>
+                    <div class="job-title" th:text="${puesto.titulo}"></div>
+                    <div class="job-salary"
+                         th:text="${#numbers.formatDecimal(puesto.salario, 1, 'COMMA', 2, 'POINT')}"></div>
+                    <a th:href="@{/buscar}" class="btn btn-outline-primary btn-job">Ver detalle</a>
+                    <div class="job-detail-box">
+                        <h6 th:text="${puesto.titulo}"></h6>
+                        <ul>
+                            <li th:each="pc : ${puesto.puestoCaracteristicas}"
+                                th:text="${pc.caracteristica.nombre} + ' (nivel ' + ${pc.nivelRequerido} + ')'"></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer('Total Soft Inc.', 'info@bolsaempleo.local')}"></footer>
+
+</body>
+</html>

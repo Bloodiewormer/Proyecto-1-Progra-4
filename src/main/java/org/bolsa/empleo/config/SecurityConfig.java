@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity          // habilita @PreAuthorize si se necesita a futuro
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
@@ -24,17 +24,13 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
-    // ─────────────────────────────────────────────
-    // 1. Encoder de contraseñas
-    // ─────────────────────────────────────────────
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // ─────────────────────────────────────────────
-    // 2. Proveedor de autenticación
-    // ─────────────────────────────────────────────
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
@@ -42,26 +38,19 @@ public class SecurityConfig {
         return provider;
     }
 
-    // ─────────────────────────────────────────────
-    // 3. AuthenticationManager (usado en AuthService)
-    // ─────────────────────────────────────────────
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // ─────────────────────────────────────────────
-    // 4. Cadena de filtros HTTP (reglas de acceso)
-    // ─────────────────────────────────────────────
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
                 .authenticationProvider(authenticationProvider())
 
-                // ── Reglas de autorización por URL ──
                 .authorizeHttpRequests(auth -> auth
-                        // Recursos públicos sin autenticación
                         .requestMatchers(
                                 "/",
                                 "/buscar",
@@ -76,31 +65,26 @@ public class SecurityConfig {
                                 "/prueba_login.html"
                         ).permitAll()
 
-                        // Solo ADMIN
                         .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
 
-                        // Solo EMPRESA
                         .requestMatchers("/empresa/**", "/api/empresa/**").hasRole("EMPRESA")
 
-                        // Solo OFERENTE
                         .requestMatchers("/oferente/**", "/api/oferente/**").hasRole("OFERENTE")
 
-                        // Cualquier otra ruta requiere autenticación
                         .anyRequest().authenticated()
                 )
 
-                // ── Formulario de login ──
+
                 .formLogin(form -> form
-                        .loginPage("/login")                        // vista Thymeleaf existente
-                        .loginProcessingUrl("/api/auth/login")      // POST que procesa credenciales
-                        .usernameParameter("credencial")            // nombre del campo en el form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/api/auth/login")
+                        .usernameParameter("credencial")
                         .passwordParameter("clave")
-                        .successHandler(roleBasedSuccessHandler())  // redirige según rol
+                        .successHandler(roleBasedSuccessHandler())
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )
 
-                // ── Logout ──
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout=true")
@@ -109,17 +93,12 @@ public class SecurityConfig {
                         .permitAll()
                 )
 
-        // ── CSRF: habilitado por defecto (Bootstrap usa forms normales) ──
-        // Si necesitas deshabilitarlo para endpoints REST puros descomenta:
-        // .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
         ;
 
         return http.build();
     }
 
-    // ─────────────────────────────────────────────
-    // 5. Redireccion post-login según rol
-    // ─────────────────────────────────────────────
+
     @Bean
     public AuthenticationSuccessHandler roleBasedSuccessHandler() {
         return (request, response, authentication) -> {

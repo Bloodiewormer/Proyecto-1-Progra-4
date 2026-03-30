@@ -36,9 +36,8 @@ public class OferenteServiceImpl implements OferenteService {
         Oferente oferente = oferenteRepository.findById(idOferente)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Oferente no encontrado"));
 
-        // Delete existing skills first, then re-insert
+
         oferenteCaracteristicaRepository.deleteByOferente_Id(idOferente);
-        // Flush to avoid constraint violations before the re-insert
         oferenteCaracteristicaRepository.flush();
 
         for (CaracteristicaNivelDto habilidad : habilidades) {

@@ -11,23 +11,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Implementación de AuthService con Spring Security.
- *
- * Cambios respecto a la versión anterior:
- *  - Se elimina PasswordHashUtil (SHA-256 + salt manual).
- *  - Se usa BCryptPasswordEncoder inyectado desde SecurityConfig.
- *  - BCrypt maneja su propio salt internamente → passwordSalt ya no se usa
- *    (se guarda vacío para no romper el esquema de BD existente).
- *  - El login/logout lo gestiona Spring Security; esta clase solo registra usuarios.
- */
+
 @Service
 public class AuthServiceImpl implements AuthService {
 
     private final UsuarioRepository usuarioRepository;
     private final EmpresaRepository empresaRepository;
     private final OferenteRepository oferenteRepository;
-    private final PasswordEncoder passwordEncoder;   // ← BCrypt desde SecurityConfig
+    private final PasswordEncoder passwordEncoder;
 
     public AuthServiceImpl(UsuarioRepository usuarioRepository,
                            EmpresaRepository empresaRepository,
@@ -39,9 +30,7 @@ public class AuthServiceImpl implements AuthService {
         this.passwordEncoder    = passwordEncoder;
     }
 
-    // ─────────────────────────────────────────────
-    // Registro de empresa
-    // ─────────────────────────────────────────────
+
     @Override
     @Transactional
     public void registrarEmpresa(RegistroEmpresaDto dto) {
@@ -67,9 +56,7 @@ public class AuthServiceImpl implements AuthService {
         empresaRepository.save(empresa);
     }
 
-    // ─────────────────────────────────────────────
-    // Registro de oferente
-    // ─────────────────────────────────────────────
+
     @Override
     @Transactional
     public void registrarOferente(RegistroOferenteDto dto) {

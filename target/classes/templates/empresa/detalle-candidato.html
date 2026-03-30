@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Detalle Candidato')}"></head>
+<body>
+
+<header>
+    <nav th:replace="~{fragments/layout :: navbar-empresa}"></nav>
+</header>
+
+<main class="main-content">
+    <section class="container page-section">
+        <h1 class="page-title">Detalle del candidato</h1>
+        <p class="page-subtitle">Información completa del postulante</p>
+
+        <div class="panel-card">
+            <div class="row g-4">
+
+                <!-- Datos personales -->
+                <div class="col-md-6">
+                    <h5 class="panel-title">Datos personales</h5>
+                    <table class="table table-borderless table-sm">
+                        <tr>
+                            <th class="text-muted" style="width:160px;">Nombre</th>
+                            <td th:text="${oferente.nombre + ' ' + oferente.apellido}"></td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Identificación</th>
+                            <td th:text="${oferente.numIdentificacion}"></td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Correo</th>
+                            <td th:text="${oferente.usuario.correo}"></td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Teléfono</th>
+                            <td th:text="${oferente.telefono}"></td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Residencia</th>
+                            <td th:text="${oferente.residencia}"></td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Nacionalidad</th>
+                            <td th:text="${oferente.nacionalidad}"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Habilidades -->
+                <div class="col-md-6">
+                    <h5 class="panel-title">Habilidades</h5>
+                    <div th:if="${#lists.isEmpty(habilidades)}" class="text-muted">
+                        Este candidato no tiene habilidades registradas.
+                    </div>
+                    <table th:if="${not #lists.isEmpty(habilidades)}"
+                           class="table table-bordered table-sm">
+                        <thead>
+                        <tr>
+                            <th>Característica</th>
+                            <th class="text-center" style="width:80px;">Nivel</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="hab : ${habilidades}">
+                            <td th:text="${hab.caracteristica.nombre}"></td>
+                            <td class="text-center">
+                                <span class="badge bg-primary" th:text="${hab.nivel}"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Currículum -->
+                <div class="col-12">
+                    <h5 class="panel-title">Currículum (CV)</h5>
+                    <div th:if="${oferente.cvPath != null and not #strings.isEmpty(oferente.cvPath)}">
+                        <a th:href="${oferente.cvPath}"
+                           target="_blank" class="btn btn-success">
+                            Ver CV completo (PDF)
+                        </a>
+                    </div>
+                    <div th:if="${oferente.cvPath == null or #strings.isEmpty(oferente.cvPath)}"
+                         class="text-muted">
+                        Este candidato aún no ha subido su currículum.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-actions mt-4">
+                <a th:if="${idPuesto != null}" th:href="@{/empresa/candidatos(idPuesto=${idPuesto})}" class="btn btn-outline-secondary">← Volver</a>
+                <a th:if="${idPuesto == null}" th:href="@{/empresa/candidatos}" class="btn btn-outline-secondary">← Volver</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer('Módulo Empresa', 'empresa@bolsaempleo.local')}"></footer>
+
+</body>
+</html>

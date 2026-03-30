@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Dashboard Empresa')}"></head>
+<body>
+
+<header>
+    <nav th:replace="~{fragments/layout :: navbar-empresa}"></nav>
+</header>
+
+<main class="main-content">
+    <section class="container page-section">
+        <h1 class="page-title">Dashboard Empresa</h1>
+        <p class="page-subtitle">Resumen general de su actividad</p>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalPuestos}">0</div>
+                    <div class="stats-label">Total puestos publicados</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${puestosActivos}">0</div>
+                    <div class="stats-label">Puestos activos</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${puestosInactivos}">0</div>
+                    <div class="stats-label">Puestos cerrados</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-card-green">
+            <div class="panel-title">Acciones rápidas</div>
+            <div class="panel-actions">
+                <a th:href="@{/empresa/nuevo-puesto}" class="btn btn-primary">Crear puesto</a>
+                <a th:href="@{/empresa/mis-puestos}" class="btn btn-outline-primary">Ver mis puestos</a>
+                <a th:href="@{/empresa/candidatos}" class="btn btn-outline-secondary">Buscar candidatos</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer('Módulo Empresa', 'empresa@bolsaempleo.local')}"></footer>
+
+</body>
+</html>

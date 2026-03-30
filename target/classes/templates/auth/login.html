@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Login')}"></head>
+<body>
+
+<header>
+    <nav th:replace="~{fragments/layout :: navbar-public}"></nav>
+</header>
+
+<main class="main-content">
+    <section class="container page-section">
+        <div class="login-wrapper">
+            <div class="form-card">
+                <h1 class="form-title">Iniciar sesión</h1>
+
+                <form th:action="@{/api/auth/login}" method="post">
+
+                    <div th:if="${loginError}" class="alert alert-danger" role="alert">
+                        Credenciales inválidas o cuenta no activa.
+                    </div>
+                    <div th:if="${logoutMsg}" class="alert alert-success" role="alert">
+                        Sesión cerrada correctamente.
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="credencial">Correo o identificación</label>
+                        <input id="credencial" name="credencial" type="text" class="form-control"
+                               placeholder="correo@ejemplo.com o ADMIN-DEMO-001" required autofocus>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="clave">Contraseña</label>
+                        <input id="clave" name="clave" type="password" class="form-control"
+                               placeholder="********" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Ingresar</button>
+                        <a th:href="@{/}" class="btn btn-outline-secondary">Volver</a>
+                    </div>
+                </form>
+
+                <hr class="my-3">
+                <p class="text-small text-muted-custom text-center">
+                    ¿No tiene cuenta?
+                    <a th:href="@{/registro/empresa}">Registrar empresa</a> |
+                    <a th:href="@{/registro/oferente}">Registrar oferente</a>
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer('Total Soft Inc.', 'info@bolsaempleo.local')}"></footer>
+
+</body>
+</html>

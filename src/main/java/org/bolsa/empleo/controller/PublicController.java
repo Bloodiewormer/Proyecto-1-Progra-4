@@ -61,7 +61,7 @@ public class PublicController {
         return "public/buscar";
     }
 
-    // --- CV: solo usuarios autenticados ---
+
     @GetMapping("/cv/{filename}")
     public ResponseEntity<Resource> verCV(@PathVariable String filename,
                                           @AuthenticationPrincipal UserDetails principal) {

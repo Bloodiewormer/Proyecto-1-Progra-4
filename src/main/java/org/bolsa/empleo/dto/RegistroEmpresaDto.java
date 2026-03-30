@@ -9,7 +9,7 @@ public class RegistroEmpresaDto {
     private String nombre;
 
     @NotBlank(message = "La cédula jurídica es obligatoria")
-    private String identificacion;   // cédula jurídica
+    private String identificacion;
 
     @NotBlank(message = "El correo es obligatorio")
     @Email

@@ -4,7 +4,7 @@ public class OferenteMatchDto {
     private Integer idOferente;
     private String nombre;
     private Integer scoreCoincidencia;
-    private Integer totalRequeridas;   // NUEVO
+    private Integer totalRequeridas;
 
     public OferenteMatchDto(Integer idOferente, String nombre,
                             Integer scoreCoincidencia, Integer totalRequeridas) {
@@ -19,7 +19,7 @@ public class OferenteMatchDto {
     public Integer getScoreCoincidencia() { return scoreCoincidencia; }
     public Integer getTotalRequeridas() { return totalRequeridas; }
 
-    // Calcula el porcentaje para la vista
+
     public double getPorcentajeCoincidencia() {
         if (totalRequeridas == null || totalRequeridas == 0) return 0.0;
         return (scoreCoincidencia * 100.0) / totalRequeridas;

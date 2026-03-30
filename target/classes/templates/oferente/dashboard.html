@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Dashboard Oferente')}"></head>
+<body>
+
+<header>
+    <nav th:replace="~{fragments/layout :: navbar-oferente}"></nav>
+</header>
+
+<main class="main-content">
+    <section class="container page-section">
+        <h1 class="page-title">Bienvenido, <span th:text="${nombreOferente}">Oferente</span></h1>
+        <p class="page-subtitle">Resumen de su perfil</p>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalHabilidades}">0</div>
+                    <div class="stats-label">Habilidades registradas</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${tieneCV} ? '✓' : '✗'">✗</div>
+                    <div class="stats-label">CV cargado</div>
+                </div>
+            </div>
+            <div class="col-md-4" th:if="${tieneCV}">
+                <div class="stats-card">
+                    <div class="stats-label mt-2">
+                        <a th:href="${cvPath}" target="_blank" class="btn btn-sm btn-outline-success">
+                            Ver mi CV actual
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-card-green">
+            <div class="panel-title">Acciones rápidas</div>
+            <div class="panel-actions">
+                <a th:href="@{/oferente/habilidades}" class="btn btn-primary">Gestionar habilidades</a>
+                <a th:href="@{/oferente/subir-cv}" class="btn btn-outline-primary">
+                    <span th:text="${tieneCV} ? 'Actualizar CV' : 'Subir CV'">Subir CV</span>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer('Módulo Oferente', 'oferente@bolsaempleo.local')}"></footer>
+
+</body>
+</html>

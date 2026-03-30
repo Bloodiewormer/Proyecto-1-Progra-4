@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Oferentes Pendientes')}"></head>
+<body>
+
+<header>
+    <nav th:replace="~{fragments/layout :: navbar-admin}"></nav>
+</header>
+
+<main class="main-content">
+    <section class="container page-section">
+        <h1 class="page-title">Oferentes pendientes</h1>
+        <p class="page-subtitle">Solicitudes pendientes de aprobación</p>
+
+        <div class="table-card">
+            <table class="table table-bordered align-middle">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Residencia</th>
+                    <th>Identificación</th>
+                    <th>Acción</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(oferentes)}">
+                    <td colspan="6" class="text-center text-muted">No hay oferentes pendientes de aprobación.</td>
+                </tr>
+                <tr th:each="oferente : ${oferentes}">
+                    <td th:text="${oferente.nombre + ' ' + oferente.apellido}"></td>
+                    <td th:text="${oferente.usuario.correo}"></td>
+                    <td th:text="${oferente.telefono}"></td>
+                    <td th:text="${oferente.residencia}"></td>
+                    <td th:text="${oferente.numIdentificacion}"></td>
+                    <td>
+                        <form th:action="@{/admin/usuarios/{id}/aprobar(id=${oferente.usuario.id})}"
+                              method="post" style="display:inline;">
+                            <input type="hidden" name="origen" value="oferente">
+                            <button type="submit" class="btn btn-sm btn-success">✓ Aprobar</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer('Módulo Administración', 'admin@bolsaempleo.local')}"></footer>
+
+</body>
+</html>
