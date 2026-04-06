@@ -79,9 +79,9 @@ El script `bolsa_empleo_setup.sql` crea los siguientes usuarios. La contraseña 
 
 | Rol         | Correo (Usuario)         | Contraseña |
 |-------------|--------------------------|------------|
-| Administrador | `admin.test@demo.com`    | `Clave123` |
-| Empresa     | `empresa.test@demo.com`  | `Clave123` |
-| Oferente    | `oferente.test@demo.com` | `Clave123` |
+| Administrador | `admin.test@demo.com`    | `123` |
+| Empresa     | `empresa.test@demo.com`  | `123` |
+| Oferente    | `oferente.test@demo.com` | `123` |
 
 **Nota Importante sobre el CV**: El script de base de datos asigna una ruta de CV (`/uploads/cv/ana-prueba.pdf`) al usuario `oferente.test@demo.com`. Sin embargo, la aplicación espera que el archivo físico exista en el sistema de ficheros del servidor. Para que la funcionalidad de descarga de CV funcione correctamente, debes iniciar sesión como el oferente y **subir un archivo PDF**, que será guardado por la aplicación en la ubicación correcta.
 
